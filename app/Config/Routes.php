@@ -99,3 +99,8 @@ $routes->post($baseSubURL . '/admin/bulkAssignRoles', 'AdminController::bulkAssi
 $routes->post($baseSubURL . '/admin/createRole', 'AdminController::createRole', ['filter' => 'permission:view_admin']);
 $routes->post($baseSubURL . '/admin/updateRole', 'AdminController::updateRole', ['filter' => 'permission:view_admin']);
 $routes->post($baseSubURL . '/admin/deleteRole', 'AdminController::deleteRole', ['filter' => 'permission:view_admin']);
+
+// Permission management routes
+$routes->get($baseSubURL . '/admin/getAllPermissions', 'AdminController::getAllPermissions', ['filter' => 'permission:view_admin']);
+$routes->get($baseSubURL . '/admin/getRolePermissions', 'AdminController::getRolePermissions', ['filter' => 'permission:view_admin']);
+$routes->post($baseSubURL . '/admin/saveRolePermissions', 'AdminController::saveRolePermissions', ['filter' => 'permission:view_admin']);

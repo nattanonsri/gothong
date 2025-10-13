@@ -245,6 +245,9 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-info btn-sm" onclick="manageRolePermissions(<?= $role['id'] ?>, '<?= $role['name'] ?>')" title="จัดการ Permission">
+                                                <i class="fas fa-key"></i>
+                                            </button>
                                             <button type="button" class="btn btn-outline-warning btn-sm" onclick="editRole(<?= $role['id'] ?>, '<?= $role['name'] ?>')" title="แก้ไข">
                                                 <i class="fas fa-edit"></i>
                                             </button>
@@ -340,6 +343,72 @@
                         <p class="mb-0" id="detailCreatedAt">-</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Role Permission Management Modal -->
+<div class="modal fade" id="rolePermissionModal" tabindex="-1" aria-labelledby="rolePermissionModalLabel" aria-hidden="true" data-bs-focus="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rolePermissionModalLabel">
+                    <i class="fas fa-key me-2"></i>จัดการ Permission สำหรับ Role
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <h6 class="fw-600 mb-3">Role: <span id="selectedRoleName" class="text-primary"></span></h6>
+                        
+                        <!-- Search Permission -->
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control" id="searchPermission" placeholder="ค้นหา Permission...">
+                            </div>
+                        </div>
+
+                        <!-- Permission List -->
+                        <div class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0">รายการ Permission</h6>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-outline-success btn-sm" onclick="selectAllPermissions()">
+                                        <i class="fas fa-check-double me-1"></i>เลือกทั้งหมด
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="deselectAllPermissions()">
+                                        <i class="fas fa-times me-1"></i>ยกเลิกทั้งหมด
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="permissionList" class="row g-2">
+                                <!-- Permissions will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Selected Permissions Summary -->
+                        <div class="mt-3" id="selectedPermissionsSummary" style="display: none;">
+                            <h6 class="fw-600 mb-2">
+                                <i class="fas fa-list me-2"></i>Permission ที่เลือก
+                            </h6>
+                            <div class="border rounded p-3 bg-light">
+                                <div id="selectedPermissionsList" class="d-flex flex-wrap gap-2">
+                                    <!-- Selected permissions will be displayed here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="button" class="btn btn-success" id="btnSavePermissions" onclick="saveRolePermissions()">
+                    <i class="fas fa-save me-2"></i>บันทึก Permission
+                </button>
             </div>
         </div>
     </div>
@@ -505,12 +574,15 @@
     // Global variables
     let allAdmins = <?= json_encode($admins) ?>;
     let allRoles = <?= json_encode($roles) ?>;
+    let allPermissions = [];
+    let currentRoleId = null;
 
     // Initialize page
     $(document).ready(function() {
         initializePage();
         setupEventListeners();
         updateRoleAdminCounts();
+        loadAllPermissions();
     });
 
     function initializePage() {
@@ -1383,6 +1455,228 @@
         }, function(err) {
             console.error('Could not copy text: ', err);
             showToast('ไม่สามารถคัดลอกได้', 'error');
+        });
+    }
+
+    // Permission Management Functions
+    function loadAllPermissions() {
+        $.ajax({
+            url: `${base_url}admin/getAllPermissions`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(res) {
+                if (res.success) {
+                    allPermissions = res.permissions;
+                } else {
+                    console.error('Failed to load permissions:', res.message);
+                }
+            },
+            error: function(xhr) {
+                console.error('Error loading permissions:', xhr.responseJSON?.message || 'Unknown error');
+            }
+        });
+    }
+
+    function manageRolePermissions(roleId, roleName) {
+        currentRoleId = roleId;
+        $('#selectedRoleName').text(roleName);
+        
+        // Load current role permissions
+        loadRolePermissions(roleId);
+        
+        // Show modal
+        $('#rolePermissionModal').modal('show');
+    }
+
+    function loadRolePermissions(roleId) {
+        $.ajax({
+            url: `${base_url}admin/getRolePermissions`,
+            type: 'GET',
+            data: { role_id: roleId },
+            dataType: 'json',
+            success: function(res) {
+                if (res.success) {
+                    displayPermissions(res.permissions);
+                } else {
+                    console.error('Failed to load role permissions:', res.message);
+                    displayPermissions([]);
+                }
+            },
+            error: function(xhr) {
+                console.error('Error loading role permissions:', xhr.responseJSON?.message || 'Unknown error');
+                displayPermissions([]);
+            }
+        });
+    }
+
+    function displayPermissions(rolePermissions) {
+        const permissionIds = rolePermissions.map(p => p.permission_id);
+        
+        $('#permissionList').empty();
+        
+        if (allPermissions.length === 0) {
+            $('#permissionList').html('<div class="col-12 text-center text-muted py-3">ไม่พบ Permission</div>');
+            return;
+        }
+
+        allPermissions.forEach(permission => {
+            const isChecked = permissionIds.includes(permission.id);
+            const permissionHtml = `
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input class="form-check-input permission-checkbox" type="checkbox" 
+                               value="${permission.id}" id="permission_${permission.id}" 
+                               ${isChecked ? 'checked' : ''}>
+                        <label class="form-check-label" for="permission_${permission.id}">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-500">${permission.permission_name}</div>
+                                    <small class="text-muted">ID: ${permission.id}</small>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            `;
+            $('#permissionList').append(permissionHtml);
+        });
+
+        // Setup permission checkbox event listeners
+        $('.permission-checkbox').off('change').on('change', function() {
+            updateSelectedPermissionsSummary();
+        });
+
+        // Setup search functionality
+        $('#searchPermission').off('keyup').on('keyup', function() {
+            filterPermissions();
+        });
+
+        updateSelectedPermissionsSummary();
+    }
+
+    function filterPermissions() {
+        const searchTerm = $('#searchPermission').val().toLowerCase();
+        
+        $('.permission-checkbox').each(function() {
+            const $checkbox = $(this);
+            const $label = $checkbox.next('label');
+            const permissionName = $label.find('.fw-500').text().toLowerCase();
+            
+            if (permissionName.includes(searchTerm)) {
+                $checkbox.closest('.col-md-6').show();
+            } else {
+                $checkbox.closest('.col-md-6').hide();
+            }
+        });
+    }
+
+    function selectAllPermissions() {
+        $('.permission-checkbox:visible').prop('checked', true);
+        updateSelectedPermissionsSummary();
+    }
+
+    function deselectAllPermissions() {
+        $('.permission-checkbox:visible').prop('checked', false);
+        updateSelectedPermissionsSummary();
+    }
+
+    function updateSelectedPermissionsSummary() {
+        const selectedPermissions = $('.permission-checkbox:checked').map(function() {
+            return parseInt($(this).val());
+        }).get();
+
+        if (selectedPermissions.length > 0) {
+            $('#selectedPermissionsSummary').show();
+            updateSelectedPermissionsList(selectedPermissions);
+        } else {
+            $('#selectedPermissionsSummary').hide();
+        }
+    }
+
+    function updateSelectedPermissionsList(selectedPermissionIds) {
+        $('#selectedPermissionsList').empty();
+        
+        selectedPermissionIds.forEach(permissionId => {
+            const permission = allPermissions.find(p => p.id == permissionId);
+            if (permission) {
+                $('#selectedPermissionsList').append(`
+                    <div class="badge bg-success d-flex align-items-center gap-1">
+                        <i class="fas fa-key"></i>
+                        ${permission.permission_name}
+                        <button type="button" class="btn-close btn-close-white btn-sm" 
+                                onclick="deselectPermission(${permissionId})"></button>
+                    </div>
+                `);
+            }
+        });
+    }
+
+    function deselectPermission(permissionId) {
+        $(`#permission_${permissionId}`).prop('checked', false);
+        updateSelectedPermissionsSummary();
+    }
+
+    function saveRolePermissions() {
+        if (!currentRoleId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'ไม่พบ Role ID',
+                text: 'กรุณาเลือก Role ใหม่'
+            });
+            return;
+        }
+
+        const selectedPermissions = $('.permission-checkbox:checked').map(function() {
+            return parseInt($(this).val());
+        }).get();
+
+        $.ajax({
+            url: `${base_url}admin/saveRolePermissions`,
+            type: 'POST',
+            data: {
+                role_id: currentRoleId,
+                permission_ids: selectedPermissions
+            },
+            dataType: 'json',
+            headers: {
+                '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+            },
+            beforeSend: function() {
+                buttonLoading('#btnSavePermissions');
+            },
+            success: function(res) {
+                if (res.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'สำเร็จ!',
+                        text: res.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $('#rolePermissionModal').modal('hide');
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: res.message
+                    });
+                }
+            },
+            error: function(xhr) {
+                buttonReset('#btnSavePermissions');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: xhr.responseJSON?.message || 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ'
+                });
+            },
+            complete: function() {
+                buttonReset('#btnSavePermissions');
+            }
         });
     }
 </script>

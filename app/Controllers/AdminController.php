@@ -344,4 +344,66 @@ class AdminController extends BaseController
             ]);
         }
     }
+
+    // Permission Management Methods
+    public function getAllPermissions()
+    {
+        $permissions = $this->permissionsModel->getPermissions();
+        
+        return $this->response->setJSON([
+            'success' => true,
+            'permissions' => $permissions
+        ]);
+    }
+
+    public function getRolePermissions()
+    {
+        $roleId = $this->request->getGet('role_id');
+        
+        if (!isset($roleId)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'ไม่พบ Role ID'
+            ]);
+        }
+
+        $rolePermissions = $this->rolePermissionModel->where('role_id', $roleId)->findAll();
+        
+        return $this->response->setJSON([
+            'success' => true,
+            'permissions' => $rolePermissions
+        ]);
+    }
+
+    public function saveRolePermissions()
+    {
+        $roleId = $this->request->getPost('role_id');
+        $permissionIds = $this->request->getPost('permission_ids');
+        
+        if (!isset($roleId)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'ไม่พบ Role ID'
+            ]);
+        }
+
+        // Delete existing permissions for this role
+        $this->rolePermissionModel->where('role_id', $roleId)->delete();
+        
+        // Insert new permissions
+        if (isset($permissionIds) && is_array($permissionIds)) {
+            foreach ($permissionIds as $permissionId) {
+                $this->rolePermissionModel->insert([
+                    'role_id' => $roleId,
+                    'permission_id' => $permissionId,
+                    'status' => 1
+                ]);
+            }
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'บันทึก Permission สำเร็จ'
+        ]);
+    }
 }
