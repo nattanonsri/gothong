@@ -33,7 +33,7 @@ class RecordController extends BaseController
     public function index()
     {
         $data['payments'] = $this->paymentModel->findAll();
-        $data['categories'] = $this->categoryModel->orderBy('name', 'ASC')->findAll();
+        $data['categories'] = $this->categoryModel->get_categories_hierarchical();
         $data['counterparties'] = $this->counterpartieModel->orderBy('name', 'ASC')->findAll();
         // dd($data['counterparties']);
         return view('backend/records/manage_record', $data);

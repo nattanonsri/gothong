@@ -53,6 +53,9 @@ $routes->get($baseSubURL . '/backend/downloadTemplateOrganization', 'Organizatio
 // Report routes
 $routes->get($baseSubURL . '/backend/totalIncome', 'ReportController::totalIncome', ['filter' => 'permission:view_totalIncome']);
 $routes->get($baseSubURL . '/backend/totalExpenses', 'ReportController::totalExpenses', ['filter' => 'permission:view_totalExpenses']);
+$routes->get($baseSubURL . '/report/income-data', 'ReportController::getIncomeData', ['filter' => 'permission:view_totalIncome']);
+$routes->get($baseSubURL . '/report/expenses-data', 'ReportController::getExpensesData', ['filter' => 'permission:view_totalExpenses']);
+$routes->get($baseSubURL . '/report/categories', 'ReportController::getCategories', ['filter' => 'permission:view_totalIncome']);
 
 // Category routes
 $routes->get($baseSubURL . '/backend/category', 'CategoryController::index', ['filter' => 'permission:view_category']);

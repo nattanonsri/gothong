@@ -210,10 +210,35 @@
         initDataTable();
         loadCounterparties();
         initEventHandlers();
+        initSelect2();
 
         // Set default datetime to now
         setDefaultDateTime();
+
     });
+
+    function initSelect2() {
+        // เริ่มต้น Select2 สำหรับ select ที่มีอยู่แล้ว
+        $('.item-category').each(function() {
+            if (!$(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'เลือกหมวดหมู่',
+                    allowClear: true,
+                    width: '100%',
+                    templateResult: function(data) {
+                        if (!data.id) {
+                            return data.text;
+                        }
+                        return $('<span>' + data.text + '</span>');
+                    },
+                    templateSelection: function(data) {
+                        return data.text;
+                    }
+                });
+            }
+        });
+    }
 
     function initDataTable() {
         recordsDataTable = $('#recordsTable').DataTable({
@@ -382,6 +407,8 @@
         });
 
         $(document).on('click', '.btn-remove-item', function() {
+            // ทำลาย Select2 ก่อนลบแถว
+            $(this).closest('tr').find('.item-category').select2('destroy');
             $(this).closest('tr').remove();
             calculateTotal();
         });
@@ -412,6 +439,8 @@
         // Clear errors when modal is hidden
         $('#recordModal').on('hidden.bs.modal', function() {
             clearAllErrors();
+            // ทำลาย Select2 ทั้งหมดใน modal
+            $('.item-category').select2('destroy');
         });
         
         // Real-time validation
@@ -570,15 +599,34 @@
 
         const modal = new bootstrap.Modal(document.getElementById('recordModal'));
         modal.show();
+        
+        // เริ่มต้น Select2 หลังจาก modal แสดง
+        setTimeout(() => {
+            initSelect2();
+        }, 300);
     }
 
 
     function addTransactionItem(item = null) {
         const index = $('#itemsTableBody tr').length;
 
-        const categoryOptions = categories.map(cat =>
-            `<option value="${cat.id}" ${item && item.category_id == cat.id ? 'selected' : ''}>${cat.name}</option>`
-        ).join('');
+        // สร้าง options แบบแยกกลุ่ม
+        let categoryOptions = '<option value="">เลือกหมวดหมู่</option>';
+        
+        categories.forEach(parentCategory => {
+            // เพิ่มหมวดหมู่หลัก
+            categoryOptions += `<optgroup label="${parentCategory.name}">`;
+            
+            // เพิ่มหมวดหมู่ย่อย
+            if (parentCategory.children && parentCategory.children.length > 0) {
+                parentCategory.children.forEach(childCategory => {
+                    const selected = item && item.category_id == childCategory.id ? 'selected' : '';
+                    categoryOptions += `<option value="${childCategory.id}" ${selected}>${childCategory.name}</option>`;
+                });
+            }
+            
+            categoryOptions += '</optgroup>';
+        });
 
         const row = `
         <tr>
@@ -588,7 +636,6 @@
             </td>
             <td>
                 <select class="form-select form-select-sm item-category">
-                    <option value="">เลือกหมวดหมู่</option>
                     ${categoryOptions}
                 </select>
             </td>
@@ -610,6 +657,24 @@
     `;
 
         $('#itemsTableBody').append(row);
+        
+        // เริ่มต้น Select2 สำหรับ select ใหม่
+        $('.item-category').last().select2({
+            theme: 'bootstrap-5',
+            placeholder: 'เลือกหมวดหมู่',
+            allowClear: true,
+            width: '100%',
+            templateResult: function(data) {
+                if (!data.id) {
+                    return data.text;
+                }
+                return $('<span>' + data.text + '</span>');
+            },
+            templateSelection: function(data) {
+                return data.text;
+            }
+        });
+        
         calculateTotal();
     }
 
@@ -885,6 +950,11 @@
                     clearAllErrors();
 
                     $('#recordModal').modal('show');
+                    
+                    // เริ่มต้น Select2 หลังจาก modal แสดง
+                    setTimeout(() => {
+                        initSelect2();
+                    }, 300);
                 }
             },
             error: function(xhr, status, error) {

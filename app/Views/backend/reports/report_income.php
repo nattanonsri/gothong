@@ -8,10 +8,10 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <h2 class="dashboard-title">
-                    <i class="fa-solid fa-money-bill-wave me-2"></i>
-                    <?= $title ?? lang('app.totalExpenses') ?>
+                    <i class="fa-solid fa-money-bill me-2"></i>
+                    <?= $title ?? lang('app.totalIncome') ?>
                 </h2>
-                <p class="text-muted mb-0">รายงานสรุปยอดค่าใช้จ่ายโดยรวม</p>
+                <p class="text-muted mb-0">รายงานสรุปยอดรายได้โดยรวม</p>
             </div>
             <div class="col-md-6 text-end">
                 <div class="btn-group">
@@ -34,7 +34,7 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">ช่วงวันที่</label>
-                    <input type="text" id="dateRangeExpenses" class="form-control" placeholder="เลือกช่วงวันที่">
+                    <input type="text" id="dateRangeIncome" class="form-control" placeholder="เลือกช่วงวันที่">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">หมวดหมู่</label>
@@ -45,7 +45,7 @@
                 <div class="col-md-4">
                     <label class="form-label">&nbsp;</label>
                     <div>
-                        <button class="btn btn-primary w-100" id="btnFilterExpenses">
+                        <button class="btn btn-primary w-100" id="btnFilterIncome">
                             <i class="fa-solid fa-filter me-2"></i>
                             กรองข้อมูล
                         </button>
@@ -58,12 +58,12 @@
     <!-- Summary Cards -->
     <div class="row g-4 mb-4">
         <div class="col-md-4">
-            <div class="metric-card expenses-card">
+            <div class="metric-card income-card">
                 <div class="metric-icon">
                     <i class="fas fa-wallet"></i>
                 </div>
                 <div class="metric-content">
-                    <h6 class="metric-label">ค่าใช้จ่ายรวมทั้งหมด</h6>
+                    <h6 class="metric-label">รายได้รวมทั้งหมด</h6>
                     <div class="metric-value">
                         <span class="amount">0.00</span>
                         <span class="currency">บาท</span>
@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="metric-card expenses-card">
+            <div class="metric-card income-card">
                 <div class="metric-icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
@@ -86,7 +86,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="metric-card expenses-card">
+            <div class="metric-card income-card">
                 <div class="metric-icon">
                     <i class="fas fa-calculator"></i>
                 </div>
@@ -107,12 +107,12 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">
-                        <i class="fa-solid fa-chart-bar me-2 text-danger"></i>
-                        กราฟค่าใช้จ่ายรายเดือน
+                        <i class="fa-solid fa-chart-bar me-2 text-success"></i>
+                        กราฟรายได้รายเดือน
                     </h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="expensesChart" height="300"></canvas>
+                    <canvas id="incomeChart" height="300"></canvas>
                 </div>
             </div>
         </div>
@@ -120,8 +120,8 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">
-                        <i class="fa-solid fa-pie-chart me-2 text-danger"></i>
-                        ค่าใช้จ่ายตามหมวดหมู่
+                        <i class="fa-solid fa-pie-chart me-2 text-success"></i>
+                        รายได้ตามหมวดหมู่
                     </h5>
                 </div>
                 <div class="card-body">
@@ -135,13 +135,13 @@
     <div class="card shadow-sm">
         <div class="card-header bg-white">
             <h5 class="mb-0">
-                <i class="fa-solid fa-table me-2 text-danger"></i>
-                รายละเอียดค่าใช้จ่าย
+                <i class="fa-solid fa-table me-2 text-success"></i>
+                รายละเอียดรายได้
             </h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover" id="expensesTable">
+                <table class="table table-hover" id="incomeTable">
                     <thead>
                         <tr>
                             <th width="5%">#</th>
@@ -156,7 +156,7 @@
                         <tr>
                             <td colspan="6" class="text-center text-muted py-4">
                                 <i class="fa-solid fa-chart-simple fa-3x mb-3"></i>
-                                <p>ยังไม่มีข้อมูลค่าใช้จ่าย</p>
+                                <p>ยังไม่มีข้อมูลรายได้</p>
                             </td>
                         </tr>
                     </tbody>
@@ -196,8 +196,8 @@
         transition: all 0.3s ease;
     }
 
-    .expenses-card {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    .income-card {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         color: white;
     }
 
@@ -261,9 +261,16 @@
 </style>
 
 <script>
+    let incomeChart, categoryChart;
+    let currentFilters = {
+        start_date: '',
+        end_date: '',
+        category_id: ''
+    };
+
     $(document).ready(function() {
         // Initialize date range picker
-        $('#dateRangeExpenses').daterangepicker({
+        $('#dateRangeIncome').daterangepicker({
             locale: {
                 format: 'DD/MM/YYYY',
                 separator: ' - ',
@@ -277,13 +284,18 @@
             autoUpdateInput: false
         });
 
-        $('#dateRangeExpenses').on('apply.daterangepicker', function(ev, picker) {
+        $('#dateRangeIncome').on('apply.daterangepicker', function(ev, picker) {
             $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            currentFilters.start_date = picker.startDate.format('YYYY-MM-DD');
+            currentFilters.end_date = picker.endDate.format('YYYY-MM-DD');
         });
 
+        // Load categories
+        loadCategories();
+
         // Filter button
-        $('#btnFilterExpenses').click(function() {
-            console.log('Filter expenses data');
+        $('#btnFilterIncome').click(function() {
+            loadIncomeData();
         });
 
         // Export buttons
@@ -295,22 +307,136 @@
             Swal.fire('Export PDF', 'ฟังก์ชันนี้กำลังพัฒนา', 'info');
         });
 
-        // Initialize charts (placeholder)
-        initExpensesCharts();
+        // Initialize charts
+        initIncomeCharts();
+
+        // Load initial data
+        loadIncomeData();
     });
 
-    function initExpensesCharts() {
-        // Expenses Chart
-        const ctxExpenses = document.getElementById('expensesChart').getContext('2d');
-        new Chart(ctxExpenses, {
+    function loadCategories() {
+        $.ajax({
+            url: base_url + '/report/categories',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    const select = $('#selectCategory');
+                    select.empty().append('<option value="">ทั้งหมด</option>');
+                    
+                    response.data.forEach(function(category) {
+                        select.append(`<option value="${category.id}">${category.name}</option>`);
+                    });
+                }
+            },
+            error: function() {
+                console.error('Error loading categories');
+            }
+        });
+    }
+
+    function loadIncomeData() {
+        // Update category filter
+        currentFilters.category_id = $('#selectCategory').val();
+
+        // Show loading
+        showLoading();
+
+        $.ajax({
+            url: base_url + '/report/income-data',
+            type: 'GET',
+            data: currentFilters,
+            dataType: 'json',
+            success: function(res) {
+                if (res.success) {
+                    updateSummaryCards(res.data.summary);
+                    updateCharts(res.data.charts);
+                    updateTable(res.data.transactions);
+                } else {
+                    Swal.fire('ข้อผิดพลาด', res.message, 'error');
+                }
+            },
+            error: function() {
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถโหลดข้อมูลได้', 'error');
+            },
+            complete: function() {
+                hideLoading();
+            }
+        });
+    }
+
+    function updateSummaryCards(summary) {
+        $('.metric-card .amount').first().text(summary.total_amount);
+        $('.metric-card .count').text(summary.total_count);
+        $('.metric-card .amount').last().text(summary.average_amount);
+    }
+
+    function updateCharts(charts) {
+        // Update monthly chart
+        if (incomeChart) {
+            incomeChart.data.labels = charts.monthly.labels;
+            incomeChart.data.datasets[0].data = charts.monthly.data;
+            incomeChart.update();
+        }
+
+        // Update category chart
+        if (categoryChart) {
+            if (charts.category.length > 0) {
+                categoryChart.data.labels = charts.category.map(item => item.label);
+                categoryChart.data.datasets[0].data = charts.category.map(item => item.value);
+                categoryChart.data.datasets[0].backgroundColor = generateColors(charts.category.length);
+            } else {
+                categoryChart.data.labels = ['ไม่มีข้อมูล'];
+                categoryChart.data.datasets[0].data = [1];
+                categoryChart.data.datasets[0].backgroundColor = ['rgba(200, 200, 200, 0.8)'];
+            }
+            categoryChart.update();
+        }
+    }
+
+    function updateTable(transactions) {
+        const tbody = $('#incomeTable tbody');
+        tbody.empty();
+
+
+        if (transactions.length === 0) {
+            tbody.append(`
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fa-solid fa-chart-simple fa-3x mb-3"></i>
+                        <p>ยังไม่มีข้อมูลรายได้</p>
+                    </td>
+                </tr>
+            `);
+        } else {
+            transactions.forEach(function(transaction, index) {
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${formatDate(transaction.datetime)}</td>
+                        <td>${transaction.item_name || transaction.descripton || '-'}</td>
+                        <td>${transaction.category_name || '-'}</td>
+                        <td class="text-end">${formatCurrency(transaction.total)}</td>
+                        <td>${transaction.note || '-'}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+    }
+
+    function initIncomeCharts() {
+        // Income Chart
+        const ctxIncome = document.getElementById('incomeChart').getContext('2d');
+        incomeChart = new Chart(ctxIncome, {
             type: 'bar',
             data: {
-                labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.'],
+                labels: [],
                 datasets: [{
-                    label: 'ค่าใช้จ่าย (บาท)',
-                    data: [0, 0, 0, 0, 0, 0],
-                    backgroundColor: 'rgba(245, 87, 108, 0.8)',
-                    borderColor: 'rgba(245, 87, 108, 1)',
+                    label: 'รายได้ (บาท)',
+                    data: [],
+                    backgroundColor: 'rgba(17, 153, 142, 0.8)',
+                    borderColor: 'rgba(17, 153, 142, 1)',
                     borderWidth: 1
                 }]
             },
@@ -321,26 +447,80 @@
                     legend: {
                         display: false
                     }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        }
+                    }
                 }
             }
         });
 
         // Category Chart
         const ctxCategory = document.getElementById('categoryChart').getContext('2d');
-        new Chart(ctxCategory, {
+        categoryChart = new Chart(ctxCategory, {
             type: 'doughnut',
             data: {
-                labels: ['ไม่มีข้อมูล'],
+                labels: [],
                 datasets: [{
-                    data: [1],
-                    backgroundColor: ['rgba(200, 200, 200, 0.8)']
+                    data: [],
+                    backgroundColor: []
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
             }
         });
+    }
+
+    function generateColors(count) {
+        const colors = [
+            'rgba(17, 153, 142, 0.8)',
+            'rgba(56, 239, 125, 0.8)',
+            'rgba(255, 193, 7, 0.8)',
+            'rgba(220, 53, 69, 0.8)',
+            'rgba(13, 110, 253, 0.8)',
+            'rgba(111, 66, 193, 0.8)',
+            'rgba(253, 126, 20, 0.8)',
+            'rgba(25, 135, 84, 0.8)'
+        ];
+        
+        const result = [];
+        for (let i = 0; i < count; i++) {
+            result.push(colors[i % colors.length]);
+        }
+        return result;
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('th-TH');
+    }
+
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('th-TH', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(amount);
+    }
+
+    function showLoading() {
+        $('#btnFilterIncome').prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-2"></i>กำลังโหลด...');
+    }
+
+    function hideLoading() {
+        $('#btnFilterIncome').prop('disabled', false).html('<i class="fa-solid fa-filter me-2"></i>กรองข้อมูล');
     }
 </script>
 

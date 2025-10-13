@@ -76,8 +76,35 @@ class CategoryModel extends Model
     public function get_all_categories()
     {
         $builder = $this->db->table($this->table . ' as c');
-        $builder->select('c.node_id, c.name, c.parent_id, c.level, c.sort, c.status');
+        $builder->select('c.id, c.node_id, c.name, c.parent_id, c.level, c.sort, c.status');
         $query = $builder->get();
         return $query->getResultArray();
+    }
+
+    public function get_categories_hierarchical()
+    {
+        $categories = $this->where('status', 'active')
+                          ->orderBy('sort', 'ASC')
+                          ->orderBy('name', 'ASC')
+                          ->findAll();
+
+        $hierarchical = [];
+        $children = [];
+
+        // แยกหมวดหมู่หลักและหมวดหมู่ย่อย
+        foreach ($categories as $category) {
+            if ($category['parent_id'] == 0) {
+                $hierarchical[] = $category;
+            } else {
+                $children[$category['parent_id']][] = $category;
+            }
+        }
+
+        // รวมหมวดหมู่ย่อยเข้ากับหมวดหมู่หลัก
+        foreach ($hierarchical as &$parent) {
+            $parent['children'] = $children[$parent['node_id']] ?? [];
+        }
+
+        return $hierarchical;
     }
 }
