@@ -1,0 +1,33 @@
+<?php
+return [
+    'greater_than' => [
+        'numeric' => 'ช่อง {field} ต้องมากกว่า {param}.',
+    ],
+    'required' => 'ต้องระบุฟิลด์ {field}',
+    'in_list' => 'ช่อง {field} ต้องเป็นหนึ่งในค่าที่อนุญาต',
+    'less_than_equal_to' => 'ช่อง {field} ต้องน้อยกว่าหรือเท่ากับ {param}',
+    'max_length' => 'ช่อง {field} ต้องไม่เกิน {param} อักขระ',
+    'numeric' => '{field} ต้องประกอบด้วยตัวเลขเท่านั้น',
+    'validateCitizenID' => '{field} กรุณากรอกให้ถูกต้อง',
+    'validateThaiMobile' => '{field} กรุณากรอกเบอร์โทรให้ถูกต้อง',
+    'validateUsername' => 'ต้องเป็นอีเมลหรือเบอร์มือถือที่ถูกต้อง',
+    'usernameDuplicate' => 'อีเมลหรือเบอร์มือถือซ้ำกับในระบบ',
+    'alpha_numeric' => 'ช่อง {field} ต้องประกอบด้วยตัวอักษรและตัวเลขเท่านั้น',
+    'min_length' => 'ฟิลด์ {field} ต้องมีความยาวขั้นต่ำ {param} ตัวอักษร',
+    'is_unique' => '{field} ซ้ำกับในระบบ',
+    'unique_in_group' => '{field} ซ้ำกับในระบบ',
+    'validatePassword' => '{field} กรุณากรอกรหัสผ่านให้ถูกต้อง',
+    'matches' => '{field} ยืนยันไม่ตรงกัน',
+    'valid_email' => 'อีเมลไม่ถูกต้อง',
+    'validateName' => 'กรุณากรอกให้ถูกต้อง',
+    'uploaded'  => 'กรุณาอัพโหลดไฟล์ {field}',
+    // 'max_size'  => 'ไฟล์ มีขนาดเกิน {param} KB',
+    'max_size'  => 'ไฟล์มีขนาดใหญ่กว่าที่กำหนด',
+    'mime_in'   => 'ไฟล์ {field} ต้องเป็นประเภท: {param}',
+    'ext_in' => 'ช่อง {field} ต้องมีไฟล์ที่มีนามสกุลอย่างใดอย่างหนึ่งต่อไปนี้: png,jpg,jpeg',
+    'valid_birthdate' => 'กรอกวันเกิดให้ถูกต้อง',
+    'is_image' => '{field} ไฟล์ไม่ถูกต้อง, กรุณาอัปโหลดเฉพาะไฟล์รูปภาพ',
+    'is_natural_no_zero'    => '{field} ต้องมีค่ามากกว่า 0',
+    'string' => '{field} ต้องกรอกเป็นตัวอักษรเท่านั้นนะครับพี่บ่าว',
+
+];

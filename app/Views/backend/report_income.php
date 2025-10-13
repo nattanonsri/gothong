@@ -1,0 +1,351 @@
+<?= $this->extend('front/template') ?>
+
+<?= $this->section('content') ?>
+
+<div class="main-content" id="mainContent">
+    <!-- Header Section -->
+    <div class="dashboard-header mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="dashboard-title">
+                    <i class="fa-solid fa-money-bill me-2"></i>
+                    <?= $title ?? lang('app.totalIncome') ?>
+                </h2>
+                <p class="text-muted mb-0">รายงานสรุปยอดรายได้โดยรวม</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <div class="btn-group">
+                    <button class="btn btn-success" id="btnExportExcel">
+                        <i class="fa-solid fa-file-excel me-2"></i>
+                        Export Excel
+                    </button>
+                    <button class="btn btn-danger" id="btnExportPDF">
+                        <i class="fa-solid fa-file-pdf me-2"></i>
+                        Export PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">ช่วงวันที่</label>
+                    <input type="text" id="dateRangeIncome" class="form-control" placeholder="เลือกช่วงวันที่">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">หมวดหมู่</label>
+                    <select class="form-select" id="selectCategory">
+                        <option value="">ทั้งหมด</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">&nbsp;</label>
+                    <div>
+                        <button class="btn btn-primary w-100" id="btnFilterIncome">
+                            <i class="fa-solid fa-filter me-2"></i>
+                            กรองข้อมูล
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="metric-card income-card">
+                <div class="metric-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="metric-content">
+                    <h6 class="metric-label">รายได้รวมทั้งหมด</h6>
+                    <div class="metric-value">
+                        <span class="amount">0.00</span>
+                        <span class="currency">บาท</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card income-card">
+                <div class="metric-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="metric-content">
+                    <h6 class="metric-label">จำนวนรายการ</h6>
+                    <div class="metric-value">
+                        <span class="count">0</span>
+                        <span class="unit">รายการ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card income-card">
+                <div class="metric-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="metric-content">
+                    <h6 class="metric-label">ค่าเฉลี่ยต่อรายการ</h6>
+                    <div class="metric-value">
+                        <span class="amount">0.00</span>
+                        <span class="currency">บาท</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fa-solid fa-chart-bar me-2 text-success"></i>
+                        กราฟรายได้รายเดือน
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="incomeChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fa-solid fa-pie-chart me-2 text-success"></i>
+                        รายได้ตามหมวดหมู่
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">
+                <i class="fa-solid fa-table me-2 text-success"></i>
+                รายละเอียดรายได้
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="incomeTable">
+                    <thead>
+                        <tr>
+                            <th width="5%">#</th>
+                            <th width="15%">วันที่</th>
+                            <th width="25%">รายการ</th>
+                            <th width="15%">หมวดหมู่</th>
+                            <th width="15%" class="text-end">จำนวนเงิน</th>
+                            <th width="15%">หมายเหตุ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="fa-solid fa-chart-simple fa-3x mb-3"></i>
+                                <p>ยังไม่มีข้อมูลรายได้</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-header {
+        padding: 1.5rem 0;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-title {
+        color: #1f2937;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .card {
+        border-radius: 12px;
+        border: none;
+    }
+
+    .metric-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f3f4f6;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .income-card {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+    }
+
+    .metric-icon {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        z-index: 1;
+        color: white;
+    }
+
+    .metric-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .metric-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .metric-value .currency,
+    .metric-value .unit {
+        font-size: 1rem;
+        opacity: 0.8;
+        font-weight: 600;
+        margin-left: 0.25rem;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .btn {
+        border-radius: 8px;
+    }
+
+    .card-header {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1.25rem 1.5rem;
+    }
+</style>
+
+<script>
+    $(document).ready(function() {
+        // Initialize date range picker
+        $('#dateRangeIncome').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY',
+                separator: ' - ',
+                applyLabel: 'ตกลง',
+                cancelLabel: 'ยกเลิก',
+                daysOfWeek: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'],
+                monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+                ]
+            },
+            autoUpdateInput: false
+        });
+
+        $('#dateRangeIncome').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        // Filter button
+        $('#btnFilterIncome').click(function() {
+            console.log('Filter income data');
+        });
+
+        // Export buttons
+        $('#btnExportExcel').click(function() {
+            Swal.fire('Export Excel', 'ฟังก์ชันนี้กำลังพัฒนา', 'info');
+        });
+
+        $('#btnExportPDF').click(function() {
+            Swal.fire('Export PDF', 'ฟังก์ชันนี้กำลังพัฒนา', 'info');
+        });
+
+        // Initialize charts (placeholder)
+        initIncomeCharts();
+    });
+
+    function initIncomeCharts() {
+        // Income Chart
+        const ctxIncome = document.getElementById('incomeChart').getContext('2d');
+        new Chart(ctxIncome, {
+            type: 'bar',
+            data: {
+                labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.'],
+                datasets: [{
+                    label: 'รายได้ (บาท)',
+                    data: [0, 0, 0, 0, 0, 0],
+                    backgroundColor: 'rgba(17, 153, 142, 0.8)',
+                    borderColor: 'rgba(17, 153, 142, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Category Chart
+        const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxCategory, {
+            type: 'doughnut',
+            data: {
+                labels: ['ไม่มีข้อมูล'],
+                datasets: [{
+                    data: [1],
+                    backgroundColor: ['rgba(200, 200, 200, 0.8)']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+</script>
+
+<?= $this->include('backend/_css') ?>
+<?= $this->include('backend/_js') ?>
+
+<?= $this->endSection() ?>
+
