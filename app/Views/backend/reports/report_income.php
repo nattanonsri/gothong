@@ -13,7 +13,7 @@
                 </h2>
                 <p class="text-muted mb-0">รายงานสรุปยอดรายได้โดยรวม</p>
             </div>
-            <div class="col-md-6 text-end">
+            <!-- <div class="col-md-6 text-end">
                 <div class="btn-group">
                     <button class="btn btn-success" id="btnExportExcel">
                         <i class="fa-solid fa-file-excel me-2"></i>
@@ -24,7 +24,7 @@
                         Export PDF
                     </button>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
