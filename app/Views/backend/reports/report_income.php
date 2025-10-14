@@ -13,18 +13,14 @@
                 </h2>
                 <p class="text-muted mb-0">รายงานสรุปยอดรายได้โดยรวม</p>
             </div>
-            <!-- <div class="col-md-6 text-end">
+            <div class="col-md-6 text-end">
                 <div class="btn-group">
                     <button class="btn btn-success" id="btnExportExcel">
                         <i class="fa-solid fa-file-excel me-2"></i>
                         Export Excel
                     </button>
-                    <button class="btn btn-danger" id="btnExportPDF">
-                        <i class="fa-solid fa-file-pdf me-2"></i>
-                        Export PDF
-                    </button>
                 </div>
-            </div> -->
+            </div>
         </div>
     </div>
 
@@ -149,7 +145,7 @@
                             <th width="25%">รายการ</th>
                             <th width="15%">หมวดหมู่</th>
                             <th width="15%" class="text-end">จำนวนเงิน</th>
-                            <th width="15%">หมายเหตุ</th>
+                            <!-- <th width="15%">หมายเหตุ</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -269,7 +265,6 @@
     };
 
     $(document).ready(function() {
-        // Initialize date range picker
         $('#dateRangeIncome').daterangepicker({
             locale: {
                 format: 'DD/MM/YYYY',
@@ -290,27 +285,17 @@
             currentFilters.end_date = picker.endDate.format('YYYY-MM-DD');
         });
 
-        // Load categories
         loadCategories();
 
-        // Filter button
         $('#btnFilterIncome').click(function() {
             loadIncomeData();
         });
 
-        // Export buttons
         $('#btnExportExcel').click(function() {
-            Swal.fire('Export Excel', 'ฟังก์ชันนี้กำลังพัฒนา', 'info');
+            exportIncomeData();
         });
 
-        $('#btnExportPDF').click(function() {
-            Swal.fire('Export PDF', 'ฟังก์ชันนี้กำลังพัฒนา', 'info');
-        });
-
-        // Initialize charts
         initIncomeCharts();
-
-        // Load initial data
         loadIncomeData();
     });
 
@@ -336,10 +321,8 @@
     }
 
     function loadIncomeData() {
-        // Update category filter
         currentFilters.category_id = $('#selectCategory').val();
 
-        // Show loading
         showLoading();
 
         $.ajax({
@@ -372,14 +355,12 @@
     }
 
     function updateCharts(charts) {
-        // Update monthly chart
         if (incomeChart) {
             incomeChart.data.labels = charts.monthly.labels;
             incomeChart.data.datasets[0].data = charts.monthly.data;
             incomeChart.update();
         }
 
-        // Update category chart
         if (categoryChart) {
             if (charts.category.length > 0) {
                 categoryChart.data.labels = charts.category.map(item => item.label);
@@ -416,8 +397,8 @@
                         <td>${formatDate(transaction.datetime)}</td>
                         <td>${transaction.item_name || transaction.descripton || '-'}</td>
                         <td>${transaction.category_name || '-'}</td>
-                        <td class="text-end">${formatCurrency(transaction.total)}</td>
-                        <td>${transaction.note || '-'}</td>
+                        <td class="text-end">${formatCurrency(transaction.price)}</td>
+                        
                     </tr>
                 `;
                 tbody.append(row);
@@ -426,7 +407,6 @@
     }
 
     function initIncomeCharts() {
-        // Income Chart
         const ctxIncome = document.getElementById('incomeChart').getContext('2d');
         incomeChart = new Chart(ctxIncome, {
             type: 'bar',
@@ -461,7 +441,6 @@
             }
         });
 
-        // Category Chart
         const ctxCategory = document.getElementById('categoryChart').getContext('2d');
         categoryChart = new Chart(ctxCategory, {
             type: 'doughnut',
@@ -521,6 +500,60 @@
 
     function hideLoading() {
         $('#btnFilterIncome').prop('disabled', false).html('<i class="fa-solid fa-filter me-2"></i>กรองข้อมูล');
+    }
+
+    function exportIncomeData() {
+        // ตรวจสอบว่ามีข้อมูลหรือไม่
+        if (currentFilters.start_date === '' && currentFilters.end_date === '' && currentFilters.category_id === '') {
+            Swal.fire({
+                title: 'ยืนยันการส่งออก',
+                text: 'คุณต้องการส่งออกข้อมูลทั้งหมดหรือไม่?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'ส่งออก',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    performExport();
+                }
+            });
+        } else {
+            performExport();
+        }
+    }
+
+    function performExport() {
+        // แสดง loading
+        const originalText = $('#btnExportExcel').html();
+        $('#btnExportExcel').prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-2"></i>กำลังส่งออก...');
+
+        // สร้าง URL พร้อม parameters
+        const params = new URLSearchParams();
+        if (currentFilters.start_date) params.append('start_date', currentFilters.start_date);
+        if (currentFilters.end_date) params.append('end_date', currentFilters.end_date);
+        if (currentFilters.category_id) params.append('category_id', currentFilters.category_id);
+
+        const exportUrl = base_url + '/report/export-income' + (params.toString() ? '?' + params.toString() : '');
+
+        // สร้าง hidden link เพื่อ download
+        const link = document.createElement('a');
+        link.href = exportUrl;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // คืนสถานะปุ่ม
+        setTimeout(() => {
+            $('#btnExportExcel').prop('disabled', false).html(originalText);
+            Swal.fire({
+                title: 'สำเร็จ',
+                text: 'ไฟล์รายงานถูกส่งออกเรียบร้อยแล้ว',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }, 1000);
     }
 </script>
 

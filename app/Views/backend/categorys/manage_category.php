@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 <div class="main-content" id="mainContent">
     <div class="d-flex justify-content-between align-items-center my-3">
-        <div class="fs-3 fw-5"><?= lang('app.category') ?></div>
+        <div class="fs-3 fw-5"><i class="fas fa-layer-group me-2"></i><?= lang('app.category') ?></div>
     </div>
 
     <div class="d-flex justify-content-end align-items-center mb-4 gap-2">

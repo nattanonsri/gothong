@@ -1,6 +1,18 @@
 <?php
 $uri = service('uri');
 $requestURI = $uri->getSegment(3);
+
+// ดึงข้อมูลผู้ใช้จาก session
+$session = session();
+$userModel = new \App\Models\UserModel();
+$userId = $session->get('user_id');
+$username = $session->get('username');
+$user = $userModel->find($userId);
+$userImage = $user['image_profile'] ?? null;
+$userFullName = trim(($user['perfix_th'] ?? '') . ' ' . ($user['first_name_th'] ?? '') . ' ' . ($user['last_name_th'] ?? ''));
+if (empty($userFullName)) {
+    $userFullName = $username;
+}
 ?>
 <header class="main-header d-flex align-items-center justify-content-between px-4" id="mainHeader">
     <div class="d-flex align-items-center">
@@ -13,64 +25,63 @@ $requestURI = $uri->getSegment(3);
     </div>
 
     <div class="d-flex align-items-center gap-3">
-        <div class="dropdown">
-            <!-- <button class="btn btn-link text-dark p-1 position-relative" data-bs-toggle="dropdown">
-                <i class="fa-solid fa-envelope fs-5"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    3
-                </span>
-            </button> -->
-            <div class="dropdown-menu dropdown-menu-end" style="width: 300px;">
-                <h6 class="dropdown-header">Notifications</h6>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item py-3">
-                    <div class="d-flex">
-<!--                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b780?w=40&h=40&fit=crop&crop=face"-->
-<!--                            class="rounded-circle me-3" width="40" height="40" alt="User">-->
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1 fs-6"><?= USERNAME ?></h6>
-                        </div>
-                    </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-center py-2">View all messages</a>
-            </div>
-        </div>
-
         <!-- User Dropdown -->
         <div class="dropdown">
             <button class="btn btn-link text-dark p-0 d-flex align-items-center" data-bs-toggle="dropdown">
-<!--                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face"-->
-<!--                    class="rounded-circle me-2" width="40" height="40" alt="User">-->
-                <span class="d-none d-md-block"><?= USERNAME ?></span>
+                <?php if ($userImage && file_exists(WRITEPATH . 'uploads/profiles/' . $userImage)): ?>
+                    <img src="<?= base_url('backend/profile/image/' . $userImage) ?>" 
+                         class="rounded-circle me-2" width="40" height="40" alt="User Profile"
+                         style="object-fit: cover;">
+                <?php else: ?>
+                    <div class="rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" 
+                         style="width: 40px; height: 40px; font-size: 16px; font-weight: bold;">
+                        <?= strtoupper(substr($username, 0, 1)) ?>
+                    </div>
+                <?php endif; ?>
+                <span class="d-none d-md-block fw-medium"><?= $userFullName ?></span>
                 <i class="fa-solid fa-chevron-down ms-2"></i>
             </button>
-            <div class="dropdown-menu dropdown-menu-end">
+            <div class="dropdown-menu dropdown-menu-end" style="min-width: 280px;">
                 <h6 class="dropdown-header">
                     <div class="d-flex align-items-center">
-<!--                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face"-->
-<!--                            class="rounded-circle me-2" width="40" height="40" alt="User">-->
+                        <?php if ($userImage && file_exists(WRITEPATH . 'uploads/profiles/' . $userImage)): ?>
+                            <img src="<?= base_url('backend/profile/image/' . $userImage) ?>" 
+                                 class="rounded-circle me-3" width="50" height="50" alt="User Profile"
+                                 style="object-fit: cover;">
+                        <?php else: ?>
+                            <div class="rounded-circle me-3 d-flex align-items-center justify-content-center bg-primary text-white" 
+                                 style="width: 50px; height: 50px; font-size: 20px; font-weight: bold;">
+                                <?= strtoupper(substr($username, 0, 1)) ?>
+                            </div>
+                        <?php endif; ?>
                         <div>
-                            <div class="fw-semibold"><?= USERNAME ?></div>
+                            <div class="fw-semibold"><?= $userFullName ?></div>
+                            <small class="text-muted"><?= $user['email'] ?? $username ?></small>
                         </div>
                     </div>
                 </h6>
-                <!-- <div class="dropdown-divider"></div> -->
-                <!-- <div class="dropdown-item">
-                    <i class="fa-solid fa-language me-2"></i>
-                    <a href="<?= base_url('backend/change_language?locale=th&requestURI=' . $requestURI) ?>"
-                        class="text-decoration-none <?= is_language('th') ? 'text-primary fw-bold' : 'text-dark' ?>">
-                        <?= lang('backend.lang_thai') ?>
-                    </a>
-                    |
-                    <a href="<?= base_url('backend/change_language?locale=en&requestURI=' . $requestURI) ?>"
-                        class="text-decoration-none <?= is_language('en') ? 'text-primary fw-bold' : 'text-dark' ?>">
-                        <?= lang('backend.lang_english') ?>
-                    </a>
-                </div> -->
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" href="<?= base_url('backend/logout') ?>">
-                    <i class="fa-solid fa-box-arrow-right me-2"></i>Logout
+                <a class="dropdown-item d-flex align-items-center py-2" href="<?= base_url('backend/profile') ?>">
+                    <i class="fa-solid fa-user me-3 text-primary"></i>
+                    <div>
+                        <div class="fw-medium"><?= lang('backend.profile') ?></div>
+                        <small class="text-muted">จัดการข้อมูลส่วนตัว</small>
+                    </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center py-2" href="<?= base_url('backend/profile/edit') ?>">
+                    <i class="fa-solid fa-user-edit me-3 text-info"></i>
+                    <div>
+                        <div class="fw-medium">แก้ไขโปรไฟล์</div>
+                        <small class="text-muted">อัปเดตข้อมูลส่วนตัว</small>
+                    </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item d-flex align-items-center py-2 text-danger" href="<?= base_url('backend/logout') ?>">
+                    <i class="fa-solid fa-box-arrow-right me-3"></i>
+                    <div>
+                        <div class="fw-medium">ออกจากระบบ</div>
+                        <small class="text-muted">Logout</small>
+                    </div>
                 </a>
             </div>
         </div>

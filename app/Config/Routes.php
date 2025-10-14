@@ -19,6 +19,15 @@ $routes->get($baseSubURL . '/backend/logout', 'BackendController::logout');
 // Dashboard routes
 $routes->get($baseSubURL . '/backend', 'DashboardController::goto_dashboard', ['filter' => 'permission:view_dashboard']);
 $routes->get($baseSubURL . '/backend/dashboard', 'DashboardController::goto_dashboard', ['filter' => 'permission:view_dashboard']);
+$routes->get($baseSubURL . '/dashboard/getDashboardData', 'DashboardController::getDashboardData', ['filter' => 'permission:view_dashboard']);
+
+
+// Profile routes
+$routes->get($baseSubURL . '/backend/profile', 'BackendController::profile', ['filter' => 'permission:view_profile']);
+$routes->get($baseSubURL . '/backend/profile/edit', 'BackendController::edit_profile', ['filter' => 'permission:view_profile']);
+$routes->post($baseSubURL . '/backend/profile/update', 'BackendController::update_profile', ['filter' => 'permission:view_profile']);
+$routes->get($baseSubURL . '/backend/profile/image/(:any)', 'BackendController::get_images_profile/$1', ['filter' => 'permission:view_profile']);
+
 
     // Record routes
 $routes->get($baseSubURL . '/backend/record', 'RecordController::index', ['filter' => 'permission:view_record']);
@@ -56,6 +65,8 @@ $routes->get($baseSubURL . '/backend/totalExpenses', 'ReportController::totalExp
 $routes->get($baseSubURL . '/report/income-data', 'ReportController::getIncomeData', ['filter' => 'permission:view_totalIncome']);
 $routes->get($baseSubURL . '/report/expenses-data', 'ReportController::getExpensesData', ['filter' => 'permission:view_totalExpenses']);
 $routes->get($baseSubURL . '/report/categories', 'ReportController::getCategories', ['filter' => 'permission:view_totalIncome']);
+$routes->get($baseSubURL . '/report/export-income', 'ReportController::exportIncome', ['filter' => 'permission:view_totalIncome']);
+$routes->get($baseSubURL . '/report/export-expenses', 'ReportController::exportExpenses', ['filter' => 'permission:view_totalExpenses']);
 
 // Category routes
 $routes->get($baseSubURL . '/backend/category', 'CategoryController::index', ['filter' => 'permission:view_category']);

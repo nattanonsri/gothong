@@ -23,16 +23,19 @@ class BackendController extends BaseController
 
     public function index()
     {
-        if (IS_LOGIN) {
+        $session = session();
+        if ($session->get('isLoggedIn')) {
             return redirect()->to(base_url('backend/dashboard'));
         } else {
             return redirect()->to(base_url('backend/login'));
         }
     }
+    
     //login
     public function login()
     {
-        if (IS_LOGIN) {
+        $session = session();
+        if ($session->get('isLoggedIn')) {
             return redirect()->to(base_url('backend/dashboard'));
         }
 
@@ -80,16 +83,142 @@ class BackendController extends BaseController
             'role_id'    => $role['role_id'],
             'isLoggedIn' => TRUE
         ];
-        
+
         if (function_exists('add_log')) {
             add_log($user['id'], 'login', 'backend/login', 'Login Success');
         }
-        
+
         $session->set($ses_data);
 
         $redirect = base_url('backend/dashboard');
 
         return $this->response->setJSON(['status' => 200, 'redirect' => $redirect]);
+    }
+
+    public function profile()
+    {
+        $data['user'] = $this->userModel->find(USER_ID);
+        return view('backend/member/profile', $data);
+    }
+
+    public function edit_profile()
+    {
+        $user = $this->userModel->find(USER_ID);
+
+        if (empty($user)) {
+            return redirect()->to(base_url('backend/profile'))->with('error', 'ไม่พบข้อมูลผู้ใช้');
+        }
+
+        $data['user'] = $user;
+
+        return view('backend/member/edit_profile', $data);
+    }
+
+    public function update_profile()
+    {
+        $user = $this->userModel->find(USER_ID);
+
+        if (empty($user)) {
+            return $this->response->setJSON([
+                'status' => 400,
+                'message' => 'ไม่พบข้อมูลผู้ใช้'
+            ])->setStatusCode(400);
+        }
+
+        $rules = [
+            'first_name_th' => ['label' => 'ชื่อ (ไทย)', 'rules' => 'required|min_length[2]|max_length[100]'],
+            'last_name_th' => ['label' => 'นามสกุล (ไทย)', 'rules' => 'required|min_length[2]|max_length[100]'],
+            'first_name_en' => ['label' => 'ชื่อ (อังกฤษ)', 'rules' => 'required|min_length[2]|max_length[100]'],
+            'last_name_en' => ['label' => 'นามสกุล (อังกฤษ)', 'rules' => 'required|min_length[2]|max_length[100]'],
+            'email' => ['label' => 'อีเมล', 'rules' => 'required|valid_email|max_length[255]'],
+            'phone' => ['label' => 'เบอร์โทรศัพท์', 'rules' => 'required|min_length[10]|max_length[15]'],
+            'gender' => ['label' => 'เพศ', 'rules' => 'required|in_list[male,female,other]'],
+            'birth_date' => ['label' => 'วันเกิด', 'rules' => 'required|valid_date[Y-m-d]']
+        ];
+
+        if (!$this->validate($rules)) {
+            return $this->response->setJSON([
+                'status' => 400,
+                'message' => $this->validator->getErrors()
+            ])->setStatusCode(400);
+        }
+
+        // ตรวจสอบ email ซ้ำ
+        $existingUser = $this->userModel->where('email', $this->request->getPost('email'))
+            ->where('id !=', USER_ID)
+            ->first();
+
+        if ($existingUser) {
+            return $this->response->setJSON([
+                'status' => 400,
+                'message' => 'อีเมลนี้ถูกใช้งานแล้ว'
+            ])->setStatusCode(400);
+        }
+
+        $updateData = [
+            'perfix_th' => $this->request->getPost('perfix_th'),
+            'first_name_th' => $this->request->getPost('first_name_th'),
+            'last_name_th' => $this->request->getPost('last_name_th'),
+            'perfix_en' => $this->request->getPost('perfix_en'),
+            'first_name_en' => $this->request->getPost('first_name_en'),
+            'last_name_en' => $this->request->getPost('last_name_en'),
+            'email' => $this->request->getPost('email'),
+            'phone' => $this->request->getPost('phone'),
+            'gender' => $this->request->getPost('gender'),
+            'birth_date' => $this->request->getPost('birth_date')
+        ];
+
+        // จัดการการอัปโหลดรูปภาพ
+        $imageFile = $this->request->getFile('image_profile');
+        if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved()) {
+            $newName = $imageFile->getRandomName();
+
+            if(!is_dir(WRITEPATH . 'uploads/profiles/')) {
+                mkdir(WRITEPATH . 'uploads/profiles/', 0777, true);
+            }
+
+            $imageFile->move(WRITEPATH . 'uploads/profiles/', $newName);
+            $updateData['image_profile'] = $newName;
+
+            // ลบรูปเก่าถ้ามี
+            if ($user['image_profile'] && file_exists(WRITEPATH . 'uploads/profiles/' . $user['image_profile'])) {
+                unlink(WRITEPATH . 'uploads/profiles/' . $user['image_profile']);
+            }
+        }
+
+        if ($this->userModel->update(USER_ID, $updateData)) {
+            if (function_exists('add_log')) {
+                add_log(USER_ID, 'update', 'backend/profile/edit', 'Update Profile Success');
+            }
+
+            return $this->response->setJSON([
+                'status' => 200,
+                'message' => 'อัปเดตข้อมูลส่วนตัวสำเร็จ'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status' => 500,
+                'message' => 'เกิดข้อผิดพลาดในการอัปเดตข้อมูล'
+            ])->setStatusCode(500);
+        }
+    }
+
+    public function get_images_profile($path) {
+
+        $path = WRITEPATH . 'uploads/profiles/' . $path;
+
+        $mimeType = mime_content_type($path);
+        $response = $this->response->setContentType($mimeType);
+        $response->setBody(file_get_contents($path));
+        return $response;
+
+       if(!file_exists($path)) { 
+        return $this->response->setStatusCode(400)->setJSON([
+            'status' => 400,
+            'message' => 'ไม่พบรูปภาพ'
+        ]);
+       }
+
     }
 
     //logout
