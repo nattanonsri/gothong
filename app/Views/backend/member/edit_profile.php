@@ -126,7 +126,7 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label for="phone" class="form-label">เบอร์โทรศัพท์ (อังกฤษ) <span class="text-danger">*</span></label>
+                                <label for="phone" class="form-label">เบอร์โทรศัพท์ <span class="text-danger">*</span></label>
                                 <input type="tel" class="form-control" id="phone" name="phone" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" value="<?= $user['phone'] ?? '' ?>" required>
                             </div>
 
