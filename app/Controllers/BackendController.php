@@ -5,18 +5,22 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Models\UserRoleModel;
+use App\Models\OrganizationModel;
+use App\Models\RoleModel;
 use Ramsey\Uuid\Uuid;
 use Config\Database;
 
 class BackendController extends BaseController
 {
     protected $db;
-    protected $userModel, $userRoleModel;
+    protected $userModel, $userRoleModel, $organizationModel, $roleModel;
     protected $currentDate;
     public function __construct()
     {
         $this->userModel = new UserModel();
         $this->userRoleModel = new UserRoleModel();
+        $this->organizationModel = new OrganizationModel();
+        $this->roleModel = new RoleModel();
         $this->db =  Database::connect();
         $this->currentDate = date('Y-m-d');
     }
@@ -97,19 +101,68 @@ class BackendController extends BaseController
 
     public function profile()
     {
-        $data['user'] = $this->userModel->find(USER_ID);
+        $user = $this->userModel->find(USER_ID);
+        
+        // ดึงข้อมูล role ของผู้ใช้
+        $userRole = $this->userRoleModel->where('user_id', USER_ID)->first();
+        $role = null;
+        if ($userRole) {
+            $role = $this->roleModel->find($userRole['role_id']);
+        }
+        
+        // ดึงข้อมูล organization ของผู้ใช้
+        $organization = null;
+        if ($user['organization_id']) {
+            $organization = $this->organizationModel->find($user['organization_id']);
+        }
+        
+        $data['user'] = $user;
+        $data['role'] = $role;
+        $data['organization'] = $organization;
+        
         return view('backend/member/profile', $data);
     }
 
     public function edit_profile()
     {
         $user = $this->userModel->find(USER_ID);
+        
+        // ดึงข้อมูล organization ที่มี parend_id = 0 (องค์กรหลัก)
+        $parentOrganizations = $this->organizationModel->where('parend_id', 0)->findAll();
+        
+        // ถ้าไม่มี organization หลักเลย ให้แสดงทั้งหมดที่เป็น parend_id ย่อยที่สุด
+        if (empty($parentOrganizations)) {
+            // หา parend_id ที่มีค่าสูงสุด (ย่อยที่สุด)
+            $maxParentId = $this->organizationModel->selectMax('parend_id')->first();
+            if ($maxParentId && $maxParentId['parend_id'] > 0) {
+                $data['organizations'] = $this->organizationModel->where('parend_id', $maxParentId['parend_id'])->findAll();
+            } else {
+                $data['organizations'] = $this->organizationModel->findAll();
+            }
+        } else {
+            $data['organizations'] = $parentOrganizations;
+        }
 
         if (empty($user)) {
             return redirect()->to(base_url('backend/profile'))->with('error', 'ไม่พบข้อมูลผู้ใช้');
         }
 
+        // ดึงข้อมูล role ของผู้ใช้
+        $userRole = $this->userRoleModel->where('user_id', USER_ID)->first();
+        $role = null;
+        if ($userRole) {
+            $role = $this->roleModel->find($userRole['role_id']);
+        }
+        
+        // ดึงข้อมูล organization ของผู้ใช้
+        $organization = null;
+        if ($user['organization_id']) {
+            $organization = $this->organizationModel->find($user['organization_id']);
+        }
+
         $data['user'] = $user;
+        $data['role'] = $role;
+        $data['organization'] = $organization;
 
         return view('backend/member/edit_profile', $data);
     }
@@ -133,7 +186,8 @@ class BackendController extends BaseController
             'email' => ['label' => 'อีเมล', 'rules' => 'required|valid_email|max_length[255]'],
             'phone' => ['label' => 'เบอร์โทรศัพท์', 'rules' => 'required|min_length[10]|max_length[15]'],
             'gender' => ['label' => 'เพศ', 'rules' => 'required|in_list[male,female,other]'],
-            'birth_date' => ['label' => 'วันเกิด', 'rules' => 'required|valid_date[Y-m-d]']
+            'birth_date' => ['label' => 'วันเกิด', 'rules' => 'required|valid_date[Y-m-d]'],
+            'organization_id' => ['label' => 'องค์กร', 'rules' => 'required']
         ];
 
         if (!$this->validate($rules)) {
@@ -165,7 +219,8 @@ class BackendController extends BaseController
             'email' => $this->request->getPost('email'),
             'phone' => $this->request->getPost('phone'),
             'gender' => $this->request->getPost('gender'),
-            'birth_date' => $this->request->getPost('birth_date')
+            'birth_date' => $this->request->getPost('birth_date'),
+            'organization_id' => $this->request->getPost('organization_id')
         ];
 
         // จัดการการอัปโหลดรูปภาพ

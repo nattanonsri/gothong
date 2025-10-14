@@ -20,7 +20,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
@@ -153,10 +153,23 @@
                                 <input type="date" class="form-control" id="birth_date" name="birth_date"
                                     value="<?= $user['birth_date'] ?? '' ?>" required>
                             </div>
-                        </div>
 
-                        <div class="row mt-4">
-                            <div class="col-12 text-end">
+                            <div class="col-12 mt-4"></div>
+                                <h6 class="text-primary mb-3">
+                                    <i class="fa-solid fa-circle-check me-2"></i>
+                                    องค์กร
+                                </h6>
+                                <div class="form-check">
+                                    <select class="form-select" id="organization_id" name="organization_id" required>
+                                        <option value="">เลือกองค์กร</option>
+                                        <?php foreach ($organizations as $organization): ?>
+                                            <option value="<?= $organization['id'] ?>" <?= ($user['organization_id'] == $organization['id']) ? 'selected' : '' ?>><?= $organization['name'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-12 text-end mt-4">
                                 <button type="button" class="btn btn-secondary me-2" onclick="window.location.href='<?= base_url('backend/profile') ?>'">
                                     <i class="fa-solid fa-times me-2"></i>
                                     ยกเลิก
@@ -172,30 +185,6 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="fa-solid fa-info-circle me-2"></i>
-                        ข้อมูลเพิ่มเติม
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label text-muted">ชื่อผู้ใช้</label>
-                        <p class="form-control-plaintext"><?= $user['username'] ?? '-' ?></p>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted">วันที่สร้าง</label>
-                        <p class="form-control-plaintext"><?= date('d/m/Y H:i', strtotime($user['created_at'])) ?></p>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted">อัปเดตล่าสุด</label>
-                        <p class="form-control-plaintext"><?= date('d/m/Y H:i', strtotime($user['updated_at'])) ?></p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

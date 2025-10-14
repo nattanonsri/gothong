@@ -95,6 +95,17 @@
                                     <p class="form-control-plaintext"><?= date('d/m/Y H:i', strtotime($user['created_at'])) ?></p>
                                 </div>
                             </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label text-muted">องค์กร</label>
+                                    <p class="form-control-plaintext"><?= $organization ? $organization['name'] : '-' ?></p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label text-muted">บทบาท</label>
+                                    <p class="form-control-plaintext"><?= $role ? $role['name'] : '-' ?></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
