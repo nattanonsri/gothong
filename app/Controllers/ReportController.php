@@ -106,7 +106,9 @@ class ReportController extends BaseController
             $monthlyStats = [];
 
             foreach ($transactions as $transaction) {
-                $totalAmount += floatval($transaction['price']);
+                // คำนวณราคารวม = price * quantity
+                $totalPrice = floatval($transaction['price']) * floatval($transaction['quantity']);
+                $totalAmount += $totalPrice;
                 $totalCount++;
 
                 // สถิติตามหมวดหมู่
@@ -114,14 +116,14 @@ class ReportController extends BaseController
                 if (!isset($categoryStats[$categoryName])) {
                     $categoryStats[$categoryName] = 0;
                 }
-                $categoryStats[$categoryName] += floatval($transaction['price']);
+                $categoryStats[$categoryName] += $totalPrice;
 
                 // สถิติรายเดือน
                 $month = date('Y-m', strtotime($transaction['datetime']));
                 if (!isset($monthlyStats[$month])) {
                     $monthlyStats[$month] = 0;
                 }
-                $monthlyStats[$month] += floatval($transaction['price']);
+                $monthlyStats[$month] += $totalPrice;
             }
 
             $averageAmount = $totalCount > 0 ? $totalAmount / $totalCount : 0;
@@ -221,7 +223,9 @@ class ReportController extends BaseController
             $monthlyStats = [];
 
             foreach ($transactions as $transaction) {
-                $totalAmount += floatval($transaction['price']);
+                // คำนวณราคารวม = price * quantity
+                $totalPrice = floatval($transaction['price']) * floatval($transaction['quantity']);
+                $totalAmount += $totalPrice;
                 $totalCount++;
 
                 // สถิติตามหมวดหมู่
@@ -229,14 +233,14 @@ class ReportController extends BaseController
                 if (!isset($categoryStats[$categoryName])) {
                     $categoryStats[$categoryName] = 0;
                 }
-                $categoryStats[$categoryName] += floatval($transaction['price']);
+                $categoryStats[$categoryName] += $totalPrice;
 
                 // สถิติรายเดือน
                 $month = date('Y-m', strtotime($transaction['datetime']));
                 if (!isset($monthlyStats[$month])) {
                     $monthlyStats[$month] = 0;
                 }
-                $monthlyStats[$month] += floatval($transaction['price']);
+                $monthlyStats[$month] += $totalPrice;
             }
 
             $averageAmount = $totalCount > 0 ? $totalAmount / $totalCount : 0;
@@ -402,16 +406,19 @@ class ReportController extends BaseController
             $row = 2;
             $totalAmount = 0;
             foreach ($transactions as $index => $transaction) {
+                // คำนวณราคารวม = price * quantity
+                $totalPrice = floatval($transaction['price']) * floatval($transaction['quantity']);
+                
                 $sheet->setCellValue('A' . $row, $index + 1);
                 $sheet->setCellValue('B' . $row, date('d/m/Y H:i', strtotime($transaction['datetime'])));
                 $sheet->setCellValue('C' . $row, $transaction['ref_no'] ?: '-');
                 $sheet->setCellValue('D' . $row, $transaction['item_name'] ?: $transaction['descripton'] ?: '-');
                 $sheet->setCellValue('E' . $row, $transaction['category_name'] ?: '-');
-                $sheet->setCellValue('F' . $row, number_format($transaction['price'], 2));
+                $sheet->setCellValue('F' . $row, number_format($totalPrice, 2));
                 $sheet->setCellValue('G' . $row, $transaction['payment_name'] ?: '-');
                 $sheet->setCellValue('H' . $row, $transaction['note'] ?: '-');
                 
-                $totalAmount += floatval($transaction['price']);
+                $totalAmount += $totalPrice;
                 $row++;
             }
 
@@ -588,16 +595,19 @@ class ReportController extends BaseController
             $row = 2;
             $totalAmount = 0;
             foreach ($transactions as $index => $transaction) {
+                // คำนวณราคารวม = price * quantity
+                $totalPrice = floatval($transaction['price']) * floatval($transaction['quantity']);
+                
                 $sheet->setCellValue('A' . $row, $index + 1);
                 $sheet->setCellValue('B' . $row, date('d/m/Y H:i', strtotime($transaction['datetime'])));
                 $sheet->setCellValue('C' . $row, $transaction['ref_no'] ?: '-');
                 $sheet->setCellValue('D' . $row, $transaction['item_name'] ?: $transaction['descripton'] ?: '-');
                 $sheet->setCellValue('E' . $row, $transaction['category_name'] ?: '-');
-                $sheet->setCellValue('F' . $row, number_format($transaction['price'], 2));
+                $sheet->setCellValue('F' . $row, number_format($totalPrice, 2));
                 $sheet->setCellValue('G' . $row, $transaction['payment_name'] ?: '-');
                 $sheet->setCellValue('H' . $row, $transaction['note'] ?: '-');
                 
-                $totalAmount += floatval($transaction['price']);
+                $totalAmount += $totalPrice;
                 $row++;
             }
 

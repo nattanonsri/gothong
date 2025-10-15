@@ -397,7 +397,7 @@
                         <td>${formatDate(transaction.datetime)}</td>
                         <td>${transaction.item_name || transaction.descripton || '-'}</td>
                         <td>${transaction.category_name || '-'}</td>
-                        <td class="text-end">${formatCurrency(transaction.price)}</td>
+                        <td class="text-end">${formatCurrency(transaction.price * transaction.quantity)}</td>
                         
                     </tr>
                 `;
