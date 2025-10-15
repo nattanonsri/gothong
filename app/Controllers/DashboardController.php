@@ -127,28 +127,38 @@ class DashboardController extends BaseController
     {
         // รายได้ (parent_id = 3)
         $incomeBuilder = $this->transactionModel->db->table('tb_transaction t');
-        $incomeBuilder->select('SUM(ti.price) as total_income');
+        $incomeBuilder->select('ti.price, ti.quantity');
         $incomeBuilder->join('tb_transaction_item ti', 't.id = ti.transaction_id', 'left');
         $incomeBuilder->join('tb_category c', 'ti.category_id = c.id', 'left');
         $incomeBuilder->where('c.parent_id', 3);
         $incomeBuilder->where('DATE(t.datetime) >=', $startDate);
         $incomeBuilder->where('DATE(t.datetime) <=', $endDate);
         $incomeBuilder->where('t.deleted_at IS NULL');
-        $incomeResult = $incomeBuilder->get()->getRowArray();
+        $incomeResult = $incomeBuilder->get()->getResultArray();
 
         // ค่าใช้จ่าย (parent_id = 4)
         $expenseBuilder = $this->transactionModel->db->table('tb_transaction t');
-        $expenseBuilder->select('SUM(ti.price) as total_expense');
+        $expenseBuilder->select('ti.price, ti.quantity');
         $expenseBuilder->join('tb_transaction_item ti', 't.id = ti.transaction_id', 'left');
         $expenseBuilder->join('tb_category c', 'ti.category_id = c.id', 'left');
         $expenseBuilder->where('c.parent_id', 4);
         $expenseBuilder->where('DATE(t.datetime) >=', $startDate);
         $expenseBuilder->where('DATE(t.datetime) <=', $endDate);
         $expenseBuilder->where('t.deleted_at IS NULL');
-        $expenseResult = $expenseBuilder->get()->getRowArray();
+        $expenseResult = $expenseBuilder->get()->getResultArray();
 
-        $totalIncome = (float)($incomeResult['total_income'] ?? 0);
-        $totalExpense = (float)($expenseResult['total_expense'] ?? 0);
+        $totalExpense = array_map(function($item) {
+            return $item['price'] * $item['quantity'];
+        }, $expenseResult);
+        $totalExpense = array_sum($totalExpense);
+
+        $totalIncome = array_map(function($item) {
+            return $item['price'] * $item['quantity'];
+        }, $incomeResult);
+        
+        $totalIncome = array_sum($totalIncome);
+        $totalIncome = (float)($totalIncome ?? 0);
+        $totalExpense = (float)($totalExpense ?? 0);
         $netProfit = $totalIncome - $totalExpense;
 
         return [

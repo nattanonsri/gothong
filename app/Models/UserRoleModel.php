@@ -43,4 +43,9 @@ class UserRoleModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getAdminRoles($adminId)
+    {
+        return $this->where('user_id', $adminId)->findAll();
+    }
 }

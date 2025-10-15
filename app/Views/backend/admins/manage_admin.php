@@ -791,7 +791,8 @@
         $('#modalAdminTable tbody tr').each(function() {
             const $row = $(this);
             const username = $row.find('td:eq(1) h6').text().toLowerCase();
-            const roles = $row.data('roles') || '';
+            const rolesAttr = $row.data('roles') || '';
+            const roleIds = rolesAttr ? rolesAttr.split(',').map(s => s.trim()) : [];
 
             let showRow = true;
 
@@ -801,10 +802,9 @@
             }
 
             // Role filter
-            if (roleFilter && !roles.includes(roleFilter)) {
+            if (roleFilter && !roleIds.includes(roleFilter)) {
                 showRow = false;
             }
-
 
             $row.toggle(showRow);
         });
@@ -874,7 +874,8 @@
         $('.modal-admin-checkbox').each(function() {
             const $row = $(this).closest('tr');
             const roles = $row.data('roles') || '';
-            if (!roles || roles.trim() === '') {
+            const rolesString = String(roles);
+            if (!roles || rolesString.trim() === '') {
                 $(this).prop('checked', true);
             }
         });

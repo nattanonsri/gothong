@@ -33,7 +33,9 @@ class AdminController extends BaseController
             'admins' => $this->userModel->getAdminsWithRoles(),
             'roles' => $this->roleModel->findAll(),
         ];
-
+        // echo "<pre>";
+        // var_dump($data['admins']);
+        // exit;
         return view('backend/admins/manage_admin', $data);
     }
 
@@ -68,7 +70,7 @@ class AdminController extends BaseController
         if ($adminId && isset($roles)) {
             foreach ($roles as $roleId) {
                 $this->userRoleModel->insert([
-                    'admin_id' => $adminId,
+                    'user_id' => $adminId,
                     'role_id' => html_entity_decode(htmlspecialchars(trim($roleId)))
                 ]);
             }
@@ -80,28 +82,23 @@ class AdminController extends BaseController
     public function updateAdmin()
     {
         $username = $this->request->getPost('username');
-        $booth_id = $this->request->getPost('booth_id');
-        $counter = $this->request->getPost('counter');
         $password = $this->request->getPost('password');
         $id = $this->request->getPost('id');
         $roles = $this->request->getPost('roles');
 
-        $adminData = [
-            'username' => $username,
-            'booth_id' => $booth_id,
-            'counter' => $counter ?? null,
-        ];
+        $adminData = ['username' => $username,];
 
         if (isset($password) && !empty($password)) {
-                $adminData['password'] = password_hash($password, PASSWORD_DEFAULT);
+            $adminData['password'] = password_hash($password, PASSWORD_DEFAULT);
         }
 
         $this->userModel->update($id, $adminData);
+        $this->userRoleModel->where('user_id', $id)->delete();
+
         if (isset($roles)) {
-            $this->userRoleModel->where('admin_id', $id)->delete();
             foreach ($roles as $roleId) {
                 $this->userRoleModel->insert([
-                    'admin_id' => $id,
+                    'user_id' => $id,
                     'role_id' => html_entity_decode(htmlspecialchars(trim($roleId)))
                 ]);
             }
@@ -113,7 +110,7 @@ class AdminController extends BaseController
     public function deleteAdmin()
     {
         $id = $this->request->getPost('id');
-        $this->userRoleModel->where('admin_id', $id)->delete();
+        $this->userRoleModel->where('user_id', $id)->delete();
         $this->userModel->delete($id);
         return $this->response->setJSON(['success' => true, 'message' => 'ลบ admin สำเร็จ']);
     }
@@ -131,7 +128,7 @@ class AdminController extends BaseController
         $request = $this->request->getJSON();
 
         $this->userRoleModel->insert([
-            'admin_id' => $request->admin_id,
+            'user_id' => $request->admin_id,
             'role_id' => html_entity_decode(htmlspecialchars(trim($request->role_id)))
         ]);
 
@@ -143,7 +140,7 @@ class AdminController extends BaseController
         $request = $this->request->getJSON();
 
         $this->userRoleModel->where([
-            'admin_id' => $request->admin_id,
+            'user_id' => $request->admin_id,
             'role_id' => html_entity_decode(htmlspecialchars(trim($request->role_id)))
         ])->delete();
 
@@ -168,14 +165,14 @@ class AdminController extends BaseController
         foreach ($adminIds as $adminId) {
             foreach ($roleIds as $roleId) {
                 $existingRole = $this->userRoleModel->where([
-                    'admin_id' => $adminId,
+                    'user_id' => $adminId,
                     'role_id' => $roleId
                 ])->first();
 
                 if (!$existingRole) {
                     try {
                         $this->userRoleModel->insert([
-                            'admin_id' => $adminId,
+                            'user_id' => $adminId,
                             'role_id' => $roleId
                         ]);
                         $successCount++;
@@ -254,6 +251,7 @@ class AdminController extends BaseController
         }
 
         $roleId = $this->roleModel->insert([
+            'uuid' => Uuid::uuid4()->toString(),
             'name' => $name
         ]);
 
@@ -349,7 +347,7 @@ class AdminController extends BaseController
     public function getAllPermissions()
     {
         $permissions = $this->permissionsModel->getPermissions();
-        
+
         return $this->response->setJSON([
             'success' => true,
             'permissions' => $permissions
@@ -359,7 +357,7 @@ class AdminController extends BaseController
     public function getRolePermissions()
     {
         $roleId = $this->request->getGet('role_id');
-        
+
         if (!isset($roleId)) {
             return $this->response->setJSON([
                 'success' => false,
@@ -368,7 +366,7 @@ class AdminController extends BaseController
         }
 
         $rolePermissions = $this->rolePermissionModel->where('role_id', $roleId)->findAll();
-        
+
         return $this->response->setJSON([
             'success' => true,
             'permissions' => $rolePermissions
@@ -379,7 +377,7 @@ class AdminController extends BaseController
     {
         $roleId = $this->request->getPost('role_id');
         $permissionIds = $this->request->getPost('permission_ids');
-        
+
         if (!isset($roleId)) {
             return $this->response->setJSON([
                 'success' => false,
@@ -389,7 +387,7 @@ class AdminController extends BaseController
 
         // Delete existing permissions for this role
         $this->rolePermissionModel->where('role_id', $roleId)->delete();
-        
+
         // Insert new permissions
         if (isset($permissionIds) && is_array($permissionIds)) {
             foreach ($permissionIds as $permissionId) {
