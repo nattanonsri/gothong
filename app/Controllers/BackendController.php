@@ -94,7 +94,8 @@ class BackendController extends BaseController
 
         $session->set($ses_data);
 
-        $redirect = base_url('backend/dashboard');
+        // ตรวจสอบสิทธิ์ของผู้ใช้และหาหน้าที่สามารถเข้าถึงได้
+        $redirect = $this->getUserAccessiblePage($user['id']);
 
         return $this->response->setJSON(['status' => 200, 'redirect' => $redirect]);
     }
@@ -274,6 +275,48 @@ class BackendController extends BaseController
         ]);
        }
 
+    }
+
+    /**
+     * ตรวจสอบสิทธิ์ของผู้ใช้และหาหน้าที่สามารถเข้าถึงได้
+     * @param int $userId
+     * @return string
+     */
+    private function getUserAccessiblePage($userId)
+    {
+        // ดึงสิทธิ์ทั้งหมดของผู้ใช้
+        $builder = $this->db->table('tb_user_role as user_role');
+        $builder->select('permissions.permission_name');
+        $builder->join('role_permissions', 'user_role.role_id = role_permissions.role_id');
+        $builder->join('permissions', 'role_permissions.permission_id = permissions.id');
+        $builder->where('user_role.user_id', $userId);
+        $query = $builder->get();
+        $permissions = $query->getResultArray();
+        
+        $permissionNames = array_column($permissions, 'permission_name');
+        
+        // กำหนดลำดับความสำคัญของหน้าที่ผู้ใช้สามารถเข้าถึงได้
+        $accessiblePages = [
+            'view_dashboard' => base_url('backend/dashboard'),
+            'view_record' => base_url('backend/record'),
+            'view_payment' => base_url('backend/payment'),
+            'view_category' => base_url('backend/category'),
+            'view_organization' => base_url('backend/organization'),
+            'view_totalIncome' => base_url('backend/totalIncome'),
+            'view_totalExpenses' => base_url('backend/totalExpenses'),
+            'view_admin' => base_url('backend/admin'),
+            'view_profile' => base_url('backend/profile')
+        ];
+        
+        // หาหน้าแรกที่ผู้ใช้มีสิทธิ์เข้าถึง
+        foreach ($accessiblePages as $permission => $url) {
+            if (in_array($permission, $permissionNames)) {
+                return $url;
+            }
+        }
+        
+        // ถ้าไม่มีสิทธิ์เข้าถึงหน้าไหนเลย ให้ไปหน้า profile (ซึ่งควรมีสิทธิ์เสมอ)
+        return base_url('backend/profile');
     }
 
     //logout
