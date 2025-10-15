@@ -299,12 +299,15 @@ class BackendController extends BaseController
         $accessiblePages = [
             'view_dashboard' => base_url('backend/dashboard'),
             'view_record' => base_url('backend/record'),
+            'view_reports' => base_url('backend/reports'),
+            'view_settings' => base_url('backend/settings'),
             'view_payment' => base_url('backend/payment'),
             'view_category' => base_url('backend/category'),
             'view_organization' => base_url('backend/organization'),
             'view_totalIncome' => base_url('backend/totalIncome'),
             'view_totalExpenses' => base_url('backend/totalExpenses'),
             'view_admin' => base_url('backend/admin'),
+
             'view_profile' => base_url('backend/profile')
         ];
         
