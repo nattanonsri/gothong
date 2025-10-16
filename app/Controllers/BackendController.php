@@ -113,9 +113,9 @@ class BackendController extends BaseController
         
         // ดึงข้อมูล organization ของผู้ใช้
         $organization = null;
-        if ($user['organization_id']) {
-            $organization = $this->organizationModel->find($user['organization_id']);
-        }
+        // if ($user['organization_id']) {
+        //     $organization = $this->organizationModel->find($user['organization_id']);
+        // }
         
         $data['user'] = $user;
         $data['role'] = $role;
@@ -157,9 +157,9 @@ class BackendController extends BaseController
         
         // ดึงข้อมูล organization ของผู้ใช้
         $organization = null;
-        if ($user['organization_id']) {
-            $organization = $this->organizationModel->find($user['organization_id']);
-        }
+        // if ($user['organization_id']) {
+        //     $organization = $this->organizationModel->find($user['organization_id']);
+        // }
 
         $data['user'] = $user;
         $data['role'] = $role;
@@ -188,7 +188,7 @@ class BackendController extends BaseController
             'phone' => ['label' => 'เบอร์โทรศัพท์', 'rules' => 'required|min_length[10]|max_length[15]'],
             'gender' => ['label' => 'เพศ', 'rules' => 'required|in_list[male,female,other]'],
             'birth_date' => ['label' => 'วันเกิด', 'rules' => 'required|valid_date[Y-m-d]'],
-            'organization_id' => ['label' => 'องค์กร', 'rules' => 'required']
+            // 'organization_id' => ['label' => 'องค์กร', 'rules' => 'required']
         ];
 
         if (!$this->validate($rules)) {
@@ -221,7 +221,7 @@ class BackendController extends BaseController
             'phone' => $this->request->getPost('phone'),
             'gender' => $this->request->getPost('gender'),
             'birth_date' => $this->request->getPost('birth_date'),
-            'organization_id' => $this->request->getPost('organization_id')
+            // 'organization_id' => $this->request->getPost('organization_id')
         ];
 
         // จัดการการอัปโหลดรูปภาพ

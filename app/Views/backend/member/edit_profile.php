@@ -159,14 +159,14 @@
                                     <i class="fa-solid fa-circle-check me-2"></i>
                                     องค์กร
                                 </h6>
-                                <div class="form-check">
+                                <!-- <div class="form-check">
                                     <select class="form-select" id="organization_id" name="organization_id" required>
                                         <option value="">เลือกองค์กร</option>
                                         <?php foreach ($organizations as $organization): ?>
                                             <option value="<?= $organization['id'] ?>" <?= ($user['organization_id'] == $organization['id']) ? 'selected' : '' ?>><?= $organization['name'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="col-12 text-end mt-4">
