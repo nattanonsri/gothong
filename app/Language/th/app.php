@@ -32,7 +32,7 @@ return [
     'reprint-coupon' => 'ปริ้นท์คูปองอีกครั้ง',
     'receipt' => 'ข้อมูลใบเสร็จ',
     'receipt-check' => 'ตรวจสอบใบเสร็จ',
-    'category' => 'ข้อมูลหมวดหมู่สินค้า',
+    'category' => 'ข้อมูลหมวดหมู่',
     'uploadImage' => 'อัพโหลดรูปภาพ',
     'receiptitem' => 'ข้อมูลสินค้า',
     'checkuser' => 'ทำรายการ',

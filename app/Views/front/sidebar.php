@@ -25,13 +25,13 @@ $menuItems = [
         'badge' => null,
         'permission' => 'view_category'
     ],
-    'organization' => [
-        'icon' => 'fa-solid fa-building me-2',
-        'title' => lang('app.organization'),
-        'url' => base_url('backend/organization'),
-        'badge' => null,
-        'permission' => 'view_organization'
-    ],
+    // 'organization' => [
+    //     'icon' => 'fa-solid fa-building me-2',
+    //     'title' => lang('app.organization'),
+    //     'url' => base_url('backend/organization'),
+    //     'badge' => null,
+    //     'permission' => 'view_organization'
+    // ],
 ];
 
 $reportItems = [
@@ -58,12 +58,12 @@ $settingsItems = [
         'url' => base_url('backend/admin'),
         'permission' => 'view_admin'
     ],
-    'payment' => [
-        'icon' => 'fa-solid fa-money-bill-wave me-2',
-        'title' => lang('app.payment'),
-        'url' => base_url('backend/payment'),
-        'permission' => 'view_payment'
-    ],
+    // 'payment' => [
+    //     'icon' => 'fa-solid fa-money-bill-wave me-2',
+    //     'title' => lang('app.payment'),
+    //     'url' => base_url('backend/payment'),
+    //     'permission' => 'view_payment'
+    // ],
 ];
 
 

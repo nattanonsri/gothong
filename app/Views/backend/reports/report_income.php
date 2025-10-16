@@ -33,10 +33,10 @@
                     <input type="text" id="dateRangeIncome" class="form-control" placeholder="เลือกช่วงวันที่">
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">หมวดหมู่</label>
+                    <!-- <label class="form-label">หมวดหมู่</label>
                     <select class="form-select" id="selectCategory">
                         <option value="">ทั้งหมด</option>
-                    </select>
+                    </select> -->
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">&nbsp;</label>

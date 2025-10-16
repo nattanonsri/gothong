@@ -28,8 +28,8 @@
                         <tr>
                             <th>ลำดับ</th>
                             <th>วันที่</th>
-                            <th>เลขที่เอกสาร</th>
-                            <th>คู่ค้า/ลูกค้า</th>
+                            <!-- <th>เลขที่เอกสาร</th> -->
+                            <!-- <th>คู่ค้า/ลูกค้า</th> -->
                             <th>ช่องทางชำระเงิน</th>
                             <th>ยอดเงิน</th>
                             <th>การจัดการ</th>
@@ -61,19 +61,19 @@
                                 <small id="datetimeError" class="text-danger"></small>
                             </div>
 
-                            <div class="mb-3">
+                            <!-- <div class="mb-3">
                                 <label class="form-label">เลขที่เอกสาร <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="ref_no" name="ref_no" placeholder="เช่น INV-001">
                                 <small id="refNoError" class="text-danger"></small>
-                            </div>
-
+                            </div> -->
+<!-- 
                             <div class="mb-3">
                                 <label class="form-label">คู่ค้า/ลูกค้า <span class="text-danger">*</span></label>
                                 <select class="form-select" id="counterpartie_id" name="counterpartie_id">
                                     <option value="">เลือกคู่ค้า หรือสร้างใหม่</option>
                                 </select>
                                 <small id="counterpartieIdError" class="text-danger"></small>
-                            </div>
+                            </div> -->
 
                             <div id="newCounterpartieFields" style="display:none;">
                                 <div class="card mb-3">
@@ -208,7 +208,7 @@
 
     $(document).ready(function() {
         initDataTable();
-        loadCounterparties();
+        // loadCounterparties();
         initEventHandlers();
         initSelect2();
 
@@ -273,18 +273,18 @@
                         });
                     }
                 },
-                {
-                    data: 'ref_no',
-                    render: function(data) {
-                        return data || '-';
-                    }
-                },
-                {
-                    data: 'counterpartie_name',
-                    render: function(data) {
-                        return data || '-';
-                    }
-                },
+                // {
+                //     data: 'ref_no',
+                //     render: function(data) {
+                //         return data || '-';
+                //     }
+                // },
+                // {
+                //     data: 'counterpartie_name',
+                //     render: function(data) {
+                //         return data || '-';
+                //     }
+                // },
                 {
                     data: 'payment_name',
                     render: function(data) {
@@ -351,27 +351,27 @@
         });
     }
 
-    function loadCounterparties() {
-        $.ajax({
-            url: BASE_URL + 'record/counterparties',
-            type: 'GET',
-            success: function(res) {
-                if (res.status === 200) {
-                    const select = $('#counterpartie_id');
-                    select.empty();
-                    select.append('<option value="">เลือกคู่ค้า</option>');
-                    select.append('<option value="new">+ สร้างคู่ค้าใหม่</option>');
+    // function loadCounterparties() {
+    //     $.ajax({
+    //         url: BASE_URL + 'record/counterparties',
+    //         type: 'GET',
+    //         success: function(res) {
+    //             if (res.status === 200) {
+    //                 const select = $('#counterpartie_id');
+    //                 select.empty();
+    //                 select.append('<option value="">เลือกคู่ค้า</option>');
+    //                 select.append('<option value="new">+ สร้างคู่ค้าใหม่</option>');
 
-                    res.data.forEach(function(item) {
-                        select.append(`<option value="${item.id}">${item.name}</option>`);
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error loading counterparties:', error);
-            }
-        });
-    }
+    //                 res.data.forEach(function(item) {
+    //                     select.append(`<option value="${item.id}">${item.name}</option>`);
+    //                 });
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             console.error('Error loading counterparties:', error);
+    //         }
+    //     });
+    // }
 
 
     function initEventHandlers() {
@@ -394,13 +394,13 @@
             deleteRecord(uuid);
         });
 
-        $('#counterpartie_id').on('change', function() {
-            if ($(this).val() === 'new') {
-                $('#newCounterpartieFields').slideDown();
-            } else {
-                $('#newCounterpartieFields').slideUp();
-            }
-        });
+        // $('#counterpartie_id').on('change', function() {
+        //     if ($(this).val() === 'new') {
+        //         $('#newCounterpartieFields').slideDown();
+        //     } else {
+        //         $('#newCounterpartieFields').slideUp();
+        //     }
+        // });
 
         $('#btnAddItem').on('click', function() {
             addTransactionItem();
@@ -453,33 +453,33 @@
             }
         });
         
-        $('#ref_no').on('input', function() {
-            clearError('refNo');
-            const value = $(this).val().trim();
-            if (!value) {
-                showError('refNo', 'กรุณากรอกเลขที่เอกสาร');
-            } else if (value.length < 3) {
-                showError('refNo', 'เลขที่เอกสารต้องมีอย่างน้อย 3 ตัวอักษร');
-            } else if (value.length > 50) {
-                showError('refNo', 'เลขที่เอกสารต้องไม่เกิน 50 ตัวอักษร');
-            } else {
-                showSuccess('refNo');
-            }
-        });
+        // $('#ref_no').on('input', function() {
+        //     clearError('refNo');
+        //     const value = $(this).val().trim();
+        //     if (!value) {
+        //         showError('refNo', 'กรุณากรอกเลขที่เอกสาร');
+        //     } else if (value.length < 3) {
+        //         showError('refNo', 'เลขที่เอกสารต้องมีอย่างน้อย 3 ตัวอักษร');
+        //     } else if (value.length > 50) {
+        //         showError('refNo', 'เลขที่เอกสารต้องไม่เกิน 50 ตัวอักษร');
+        //     } else {
+        //         showSuccess('refNo');
+        //     }
+        // });
         
-        $('#counterpartie_id').on('change', function() {
-            clearError('counterpartieId');
-            const value = $(this).val();
-            if (!value) {
-                showError('counterpartieId', 'กรุณาเลือกคู่ค้า/ลูกค้า');
-            } else if (value === 'new') {
-                $('#newCounterpartieFields').slideDown();
-                showSuccess('counterpartieId');
-            } else {
-                $('#newCounterpartieFields').slideUp();
-                showSuccess('counterpartieId');
-            }
-        });
+        // $('#counterpartie_id').on('change', function() {
+        //     clearError('counterpartieId');
+        //     const value = $(this).val();
+        //     if (!value) {
+        //         showError('counterpartieId', 'กรุณาเลือกคู่ค้า/ลูกค้า');
+        //     } else if (value === 'new') {
+        //         $('#newCounterpartieFields').slideDown();
+        //         showSuccess('counterpartieId');
+        //     } else {
+        //         $('#newCounterpartieFields').slideUp();
+        //         showSuccess('counterpartieId');
+        //     }
+        // });
         
         $('#payment_id').on('change', function() {
             clearError('paymentId');
@@ -574,7 +574,7 @@
     }
     
     function clearAllErrors() {
-        const fields = ['datetime', 'refNo', 'counterpartieId', 'paymentId', 'counterpartieName', 'counterpartieTaxId', 'counterpartiePhone', 'counterpartieEmail'];
+        const fields = ['datetime', 'paymentId', 'counterpartieName', 'counterpartieTaxId', 'counterpartiePhone', 'counterpartieEmail'];
         fields.forEach(field => {
             clearError(field);
         });
@@ -794,8 +794,8 @@
                     if (xhr.responseJSON.errors) {
                         const errors = xhr.responseJSON.errors;
                         Object.keys(errors).forEach(field => {
-                            const fieldName = field === 'ref_no' ? 'refNo' : 
-                                            field === 'counterpartie_id' ? 'counterpartieId' :
+                            const fieldName = //field === 'ref_no' ? 'refNo' : 
+                                            // field === 'counterpartie_id' ? 'counterpartieId' :
                                             field === 'payment_id' ? 'paymentId' :
                                             field === 'counterpartie_name' ? 'counterpartieName' :
                                             field === 'counterpartie_tax_id' ? 'counterpartieTaxId' :
@@ -834,8 +834,6 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p><strong>วันที่:</strong> ${formatDateTime(data.datetime)}</p>
-                            <p><strong>เลขที่เอกสาร:</strong> ${data.ref_no || '-'}</p>
-                            <p><strong>คู่ค้า/ลูกค้า:</strong> ${data.counterpartie_name || '-'}</p>
                         </div>
                         <div class="col-md-6">
                             <p><strong>ช่องทางชำระเงิน:</strong> ${data.payment_name || '-'}</p>
@@ -933,8 +931,8 @@
                     const minutes = String(datetime.getMinutes()).padStart(2, '0');
                     $('#datetime').val(`${year}-${month}-${day}T${hours}:${minutes}`);
 
-                    $('#ref_no').val(data.ref_no || '');
-                    $('#counterpartie_id').val(data.counterpartie_id || '');
+                    // $('#ref_no').val(data.ref_no || '');
+                    // $('#counterpartie_id').val(data.counterpartie_id || '');
                     $('#payment_id').val(data.payment_id || '');
                     $('#description').val(data.descripton || '');
 
@@ -1136,24 +1134,24 @@
         }
         
         // Validate ref_no ()
-        const refNo = $('#ref_no').val().trim();
-        if (!refNo) {
-            showError('refNo', 'กรุณากรอกเลขที่เอกสาร');
-            isValid = false;
-        } else if (refNo.length < 3) {
-            showError('refNo', 'เลขที่เอกสารต้องมีอย่างน้อย 3 ตัวอักษร');
-            isValid = false;
-        } else if (refNo.length > 50) {
-            showError('refNo', 'เลขที่เอกสารต้องไม่เกิน 50 ตัวอักษร');
-            isValid = false;
-        }
+        // const refNo = $('#ref_no').val().trim();
+        // if (!refNo) {
+        //     showError('refNo', 'กรุณากรอกเลขที่เอกสาร');
+        //     isValid = false;
+        // } else if (refNo.length < 3) {
+        //     showError('refNo', 'เลขที่เอกสารต้องมีอย่างน้อย 3 ตัวอักษร');
+        //     isValid = false;
+        // } else if (refNo.length > 50) {
+        //     showError('refNo', 'เลขที่เอกสารต้องไม่เกิน 50 ตัวอักษร');
+        //     isValid = false;
+        // }
         
         // Validate counterpartie_id ()
-        const counterpartieId = $('#counterpartie_id').val();
-        if (!counterpartieId) {
-            showError('counterpartieId', 'กรุณาเลือกคู่ค้า/ลูกค้า');
-            isValid = false;
-        }
+        // const counterpartieId = $('#counterpartie_id').val();
+        // if (!counterpartieId) {
+        //     showError('counterpartieId', 'กรุณาเลือกคู่ค้า/ลูกค้า');
+        //     isValid = false;
+        // }
         
         // Validate payment_id ()
         const paymentId = $('#payment_id').val();
@@ -1163,44 +1161,44 @@
         }
         
         // Validate new counterpartie fields if creating new
-        if (counterpartieId === 'new') {
-            const counterpartieName = $('input[name="counterpartie_name"]').val().trim();
-            if (!counterpartieName) {
-                showError('counterpartieName', 'กรุณากรอกชื่อคู่ค้า/ลูกค้า');
-                isValid = false;
-            } else if (counterpartieName.length < 2) {
-                showError('counterpartieName', 'ชื่อต้องมีอย่างน้อย 2 ตัวอักษร');
-                isValid = false;
-            } else if (counterpartieName.length > 100) {
-                showError('counterpartieName', 'ชื่อต้องไม่เกิน 100 ตัวอักษร');
-                isValid = false;
-            }
+        // if (counterpartieId === 'new') {
+        //     const counterpartieName = $('input[name="counterpartie_name"]').val().trim();
+        //     if (!counterpartieName) {
+        //         showError('counterpartieName', 'กรุณากรอกชื่อคู่ค้า/ลูกค้า');
+        //         isValid = false;
+        //     } else if (counterpartieName.length < 2) {
+        //         showError('counterpartieName', 'ชื่อต้องมีอย่างน้อย 2 ตัวอักษร');
+        //         isValid = false;
+        //     } else if (counterpartieName.length > 100) {
+        //         showError('counterpartieName', 'ชื่อต้องไม่เกิน 100 ตัวอักษร');
+        //         isValid = false;
+        //     }
 
-            const taxId = $('input[name="counterpartie_tax_id"]').val().trim();
-            if (taxId) {
-                if (!/^\d{13}$/.test(taxId.replace(/-/g, ''))) {
-                    showError('counterpartieTaxId', 'เลขประจำตัวผู้เสียภาษีต้องเป็นตัวเลข 13 หลัก');
-                    isValid = false;
-                }
-            }
+        //     const taxId = $('input[name="counterpartie_tax_id"]').val().trim();
+        //     if (taxId) {
+        //         if (!/^\d{13}$/.test(taxId.replace(/-/g, ''))) {
+        //             showError('counterpartieTaxId', 'เลขประจำตัวผู้เสียภาษีต้องเป็นตัวเลข 13 หลัก');
+        //             isValid = false;
+        //         }
+        //     }
 
-            const phone = $('input[name="counterpartie_phone"]').val().trim();
-            if (phone) {
-                if (!/^[0-9]{9,10}$/.test(phone.replace(/-/g, ''))) {
-                    showError('counterpartiePhone', 'เบอร์โทรศัพท์ไม่ถูกต้อง (ต้องเป็นตัวเลข 9-10 หลัก)');
-                    isValid = false;
-                }
-            }
+        //     const phone = $('input[name="counterpartie_phone"]').val().trim();
+        //     if (phone) {
+        //         if (!/^[0-9]{9,10}$/.test(phone.replace(/-/g, ''))) {
+        //             showError('counterpartiePhone', 'เบอร์โทรศัพท์ไม่ถูกต้อง (ต้องเป็นตัวเลข 9-10 หลัก)');
+        //             isValid = false;
+        //         }
+        //     }
 
-            const email = $('input[name="counterpartie_email"]').val().trim();
-            if (email) {
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(email)) {
-                    showError('counterpartieEmail', 'รูปแบบอีเมลไม่ถูกต้อง');
-                    isValid = false;
-                }
-            }
-        }
+        //     const email = $('input[name="counterpartie_email"]').val().trim();
+        //     if (email) {
+        //         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        //         if (!emailPattern.test(email)) {
+        //             showError('counterpartieEmail', 'รูปแบบอีเมลไม่ถูกต้อง');
+        //             isValid = false;
+        //         }
+        //     }
+        // }
 
         // Validate transaction items
         let hasItemError = false;

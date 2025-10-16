@@ -121,12 +121,12 @@ class RecordController extends BaseController
 
             $data = $this->request->getPost(); 
 
-            $counterpartieId = $this->handleCounterpartie($data);
+            // $counterpartieId = $this->handleCounterpartie($data);
        
             $transactionData = [
                 'uuid' => Uuid::uuid4()->toString(),
                 'datetime' => $data['datetime'] ?? date('Y-m-d H:i:s'),
-                'counterpartie_id' => $counterpartieId,
+                // 'counterpartie_id' => $counterpartieId,
                 'payment_id' => $data['payment_id'] ?? null,
                 'user_id' => USER_ID,
                 'ref_no' => $data['ref_no'] ?? '',

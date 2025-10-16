@@ -180,7 +180,7 @@
             </div>
 
             <!-- System Stats -->
-            <div class="col-xl-6 col-lg-6 d-flex">
+            <!-- <div class="col-xl-6 col-lg-6 d-flex">
                 <div class="card shadow mb-4 flex-fill d-flex flex-column">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">สถิติระบบ</h6>
@@ -266,7 +266,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <!-- Recent Transactions -->

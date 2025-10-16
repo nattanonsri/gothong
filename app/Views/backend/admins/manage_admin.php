@@ -22,7 +22,7 @@
     </div>
 
     <!-- Search and Filter Section -->
-    <div class="card shadow-sm border-0 mb-4">
+    <!-- <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Admin List Section -->
     <div class="card shadow-sm border-0">
@@ -51,11 +51,11 @@
                     <i class="fas fa-list me-2 text-primary"></i>
                     รายการผู้ดูแลระบบ
                 </h5>
-                <div class="d-flex gap-2">
+                <!-- <div class="d-flex gap-2">
                     <button type="button" class="btn btn-gradient-outline btn-sm" onclick="bulkAssignRoles()">
                         <i class="fas fa-users me-1"></i>มอบหมาย Role แบบกลุ่ม
                     </button>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="card-body p-0">
