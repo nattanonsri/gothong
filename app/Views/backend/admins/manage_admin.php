@@ -7,7 +7,7 @@
         <div>
             <h2 class="fw-600 text-dark mb-1">
                 <i class="fas fa-users-cog me-2 text-primary"></i>
-                จัดการผู้ดูแลระบบ
+                <?= lang('app.admin')?>
             </h2>
             <p class="text-muted mb-0">จัดการข้อมูลผู้ใช้และสิทธิ์การเข้าถึงระบบ</p>
         </div>
