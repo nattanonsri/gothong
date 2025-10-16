@@ -49,7 +49,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-600">
                     <i class="fas fa-list me-2 text-primary"></i>
-                    รายการผู้ดูแลระบบ
+                    <?= lang('app.admin')?>
                 </h5>
                 <!-- <div class="d-flex gap-2">
                     <button type="button" class="btn btn-gradient-outline btn-sm" onclick="bulkAssignRoles()">
@@ -68,7 +68,7 @@
                             </th>
                             <th>Username</th>
                             <th>Roles</th>
-                            <th>วันที่สร้าง</th>
+                            <!-- <th>วันที่สร้าง</th> -->
                             <th width="150">จัดการ</th>
                         </tr>
                     </thead>
@@ -105,9 +105,9 @@
                                             <?php endif; ?>
                                         </div>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <small class="text-muted"><?= date('d/m/Y H:i', strtotime($admin['created_at'])) ?></small>
-                                    </td>
+                                    </td> -->
                                     <td>
                                         <!-- <div class="btn-group" role="group"> -->
                                         <!-- <button type="button" class="btn btn-outline-primary btn-sm" onclick="openRoleAssignmentModal(<?= $admin['id'] ?>)" title="จัดการ Role">
@@ -154,7 +154,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="createAdminModalLabel">
-                    <i class="fas fa-user-plus me-2"></i>เพิ่ม Admin ใหม่
+                    <i class="fas fa-user-plus me-2"></i>เพิ่มผู้ใช้งานใหม่
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -209,13 +209,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="roleManagementModalLabel">
-                    <i class="fas fa-shield-alt me-2"></i>จัดการ Role
+                    <i class="fas fa-shield-alt me-2"></i>จัดการสิทธิ์การเข้าถึง
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0">รายการ Role ทั้งหมด</h6>
+                    <h6 class="mb-0">รายการสิทธิ์การเข้าถึงทั้งหมด</h6>
                     <button type="button" class="btn btn-success btn-sm" onclick="openAddRoleModal()">
                         <i class="fas fa-plus me-1"></i>เพิ่ม Role ใหม่
                     </button>
@@ -224,8 +224,8 @@
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th>ชื่อ Role</th>
-                                <th>จำนวน Admin</th>
+                                <th>ชื่อสิทธิ์การเข้าถึง</th>
+                                <th>จำนวนผู้ใช้งาน</th>
                                 <th width="120">จัดการ</th>
                             </tr>
                         </thead>
@@ -272,16 +272,16 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="roleAssignmentModalLabel">
-                    <i class="fas fa-user-shield me-2"></i>จัดการ Role สำหรับ Admin
+                    <i class="fas fa-user-shield me-2"></i>จัดการสิทธิ์การเข้าถึงสำหรับผู้ใช้งาน
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="fw-600 mb-3">Admin: <span id="selectedAdminUsername" class="text-primary"></span></h6>
+                        <h6 class="fw-600 mb-3">ผู้ใช้งาน: <span id="selectedAdminUsername" class="text-primary"></span></h6>
                         <div class="mb-3">
-                            <label class="form-label fw-500">Role ปัจจุบัน:</label>
+                            <label class="form-label fw-500">สิทธิ์การเข้าถึงปัจจุบัน:</label>
                             <div id="currentRoles" class="d-flex flex-wrap gap-2">
                                 <!-- Current roles will be displayed here -->
                             </div>
@@ -289,10 +289,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="newRoleSelect" class="form-label fw-500">เพิ่ม Role ใหม่:</label>
+                            <label for="newRoleSelect" class="form-label fw-500">เพิ่มสิทธิ์การเข้าถึงใหม่:</label>
                             <div class="input-group">
                                 <select class="form-select" id="newRoleSelect">
-                                    <option value="">เลือก Role</option>
+                                    <option value="">เลือกสิทธิ์การเข้าถึง</option>
                                     <?php foreach ($roles as $role): ?>
                                         <option value="<?= $role['id'] ?>"><?= $role['name'] ?></option>
                                     <?php endforeach; ?>
@@ -315,7 +315,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="adminDetailModalLabel">
-                    <i class="fas fa-user me-2"></i>รายละเอียด Admin
+                    <i class="fas fa-user me-2"></i>รายละเอียดผู้ใช้งาน
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -333,13 +333,13 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-500">Roles:</label>
+                        <label class="form-label fw-500">สิทธิ์การเข้าถึง:</label>
                         <div id="detailRoles" class="d-flex flex-wrap gap-2">
                             <!-- Roles will be displayed here -->
                         </div>
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-500">วันที่สร้าง:</label>
+                        <label class="form-label fw-500">วันที่สร้างผู้ใช้งาน:</label>
                         <p class="mb-0" id="detailCreatedAt">-</p>
                     </div>
                 </div>
@@ -354,27 +354,27 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rolePermissionModalLabel">
-                    <i class="fas fa-key me-2"></i>จัดการ Permission สำหรับ Role
+                    <i class="fas fa-key me-2"></i>จัดการสิทธิ์การเข้าถึงสำหรับผู้ใช้งาน
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <h6 class="fw-600 mb-3">Role: <span id="selectedRoleName" class="text-primary"></span></h6>
+                        <h6 class="fw-600 mb-3">สิทธิ์การเข้าถึง: <span id="selectedRoleName" class="text-primary"></span></h6>
                         
                         <!-- Search Permission -->
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                <input type="text" class="form-control" id="searchPermission" placeholder="ค้นหา Permission...">
+                                <input type="text" class="form-control" id="searchPermission" placeholder="ค้นหาสิทธิ์การเข้าถึง...">
                             </div>
                         </div>
 
                         <!-- Permission List -->
                         <div class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6 class="mb-0">รายการ Permission</h6>
+                                <h6 class="mb-0">รายการสิทธิ์การเข้าถึง</h6>
                                 <div class="d-flex gap-2">
                                     <button type="button" class="btn btn-outline-success btn-sm" onclick="selectAllPermissions()">
                                         <i class="fas fa-check-double me-1"></i>เลือกทั้งหมด
@@ -393,7 +393,7 @@
                         <!-- Selected Permissions Summary -->
                         <div class="mt-3" id="selectedPermissionsSummary" style="display: none;">
                             <h6 class="fw-600 mb-2">
-                                <i class="fas fa-list me-2"></i>Permission ที่เลือก
+                                <i class="fas fa-list me-2"></i>สิทธิ์การเข้าถึงที่เลือก
                             </h6>
                             <div class="border rounded p-3 bg-light">
                                 <div id="selectedPermissionsList" class="d-flex flex-wrap gap-2">
@@ -407,7 +407,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                 <button type="button" class="btn btn-success" id="btnSavePermissions" onclick="saveRolePermissions()">
-                    <i class="fas fa-save me-2"></i>บันทึก Permission
+                    <i class="fas fa-save me-2"></i>บันทึกสิทธิ์การเข้าถึง
                 </button>
             </div>
         </div>
@@ -420,7 +420,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="bulkRoleAssignmentModalLabel">
-                    <i class="fas fa-users me-2"></i>มอบหมาย Role แบบกลุ่ม
+                    <i class="fas fa-users me-2"></i>มอบหมายสิทธิ์การเข้าถึงแบบกลุ่ม
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -430,12 +430,12 @@
                     <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" class="form-control" id="modalSearchAdmin" placeholder="ค้นหา Admin...">
+                            <input type="text" class="form-control" id="modalSearchAdmin" placeholder="ค้นหาผู้ใช้งาน...">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <select class="form-select" id="modalFilterRole">
-                            <option value="">ทุก Role</option>
+                            <option value="">ทุกสิทธิ์การเข้าถึง</option>
                             <?php foreach ($roles as $role): ?>
                                 <option value="<?= $role['id'] ?>"><?= $role['name'] ?></option>
                             <?php endforeach; ?>
@@ -467,7 +467,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <h6 class="fw-600 mb-3">
-                            <i class="fas fa-users me-2"></i>เลือก Admin
+                            <i class="fas fa-users me-2"></i>เลือกผู้ใช้งาน
                         </h6>
                         <div class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
                             <div class="table-responsive">
@@ -477,8 +477,8 @@
                                             <th width="50">
                                                 <input type="checkbox" class="form-check-input" id="selectAllModalTable">
                                             </th>
-                                            <th>Username</th>
-                                            <th>Roles</th>
+                                            <th>ชื่อผู้ใช้งาน</th>
+                                            <th>สิทธิ์การเข้าถึง</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -508,7 +508,7 @@
                                                                 <span class="badge bg-primary"><?= trim($roleNames[$i]) ?></span>
                                                             <?php endfor; ?>
                                                         <?php else: ?>
-                                                            <span class="text-muted">ไม่มี Role</span>
+                                                            <span class="text-muted">ไม่มีสิทธิ์การเข้าถึง</span>
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>
@@ -523,7 +523,7 @@
                     <!-- Role Selection Panel -->
                     <div class="col-md-4">
                         <h6 class="fw-600 mb-3">
-                            <i class="fas fa-shield-alt me-2"></i>เลือก Role ที่ต้องการมอบหมาย
+                            <i class="fas fa-shield-alt me-2"></i>เลือกสิทธิ์การเข้าถึงที่ต้องการมอบหมาย
                         </h6>
                         <div class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
                             <div class="d-flex flex-column gap-2">
@@ -536,7 +536,7 @@
                                             </div>
                                             <div>
                                                 <div class="fw-500"><?= $role['name'] ?></div>
-                                                <small class="text-muted">Role ID: <?= $role['id'] ?></small>
+                                                <small class="text-muted">รหัสสิทธิ์การเข้าถึง: <?= $role['id'] ?></small>
                                             </div>
                                         </label>
                                     </div>
@@ -549,7 +549,7 @@
                 <!-- Selected Admins Summary -->
                 <div class="mt-4" id="selectedAdminsSummary" style="display: none;">
                     <h6 class="fw-600 mb-3">
-                        <i class="fas fa-list me-2"></i>สรุป Admin ที่เลือก
+                        <i class="fas fa-list me-2"></i>สรุปผู้ใช้งานที่เลือก
                     </h6>
                     <div class="border rounded p-3 bg-light">
                         <div id="selectedAdminsList" class="d-flex flex-wrap gap-2">
@@ -561,7 +561,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                 <button type="button" class="btn btn-warning" id="btnBulkAssign" onclick="executeBulkRoleAssignment()" disabled>
-                    <i class="fas fa-users me-2"></i>มอบหมาย Role
+                    <i class="fas fa-users me-2"></i>มอบหมายสิทธิ์การเข้าถึง
                 </button>
             </div>
         </div>
