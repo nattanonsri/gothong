@@ -13,10 +13,10 @@
         </div>
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-gradient rounded-2 btn-sm px-4" onclick="openCreateAdminModal()">
-                <i class="fas fa-user-plus me-2"></i>เพิ่ม Admin ใหม่
+                <i class="fas fa-user-plus me-2"></i>เพิ่มผู้ใช้งานใหม่
             </button>
             <button type="button" class="btn btn-gradient-outline rounded-2 btn-sm px-4" onclick="openRoleManagementModal()">
-                <i class="fas fa-shield-alt me-2"></i>จัดการ Role
+                <i class="fas fa-shield-alt me-2"></i>จัดการสิทธิ์การเข้าถึง
             </button>
         </div>
     </div>
