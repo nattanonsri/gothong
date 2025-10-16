@@ -61,8 +61,8 @@ return [
     'payment' => 'ช่องทางชำระเงิน',
 
     'record' => 'รายการ',
-    'totalIncome' => 'ยอดขายโดยรวม',
-    'totalExpenses' => 'ยอดค่าใช้จ่ายโดยรวม',
+    'totalIncome' => 'รายรับโดยรวม',
+    'totalExpenses' => 'รายจ่ายโดยรวม',
     'organization' => 'องค์กร',
 
     
