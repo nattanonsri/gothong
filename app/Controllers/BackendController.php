@@ -277,11 +277,6 @@ class BackendController extends BaseController
 
     }
 
-    /**
-     * ตรวจสอบสิทธิ์ของผู้ใช้และหาหน้าที่สามารถเข้าถึงได้
-     * @param int $userId
-     * @return string
-     */
     private function getUserAccessiblePage($userId)
     {
         // ดึงสิทธิ์ทั้งหมดของผู้ใช้

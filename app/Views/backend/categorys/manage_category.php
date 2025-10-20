@@ -119,7 +119,7 @@
 
     <!-- Main Content -->
     <div class="row g-2 mt-2">
-        <div class="col-lg-8">
+        <div class="col-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom">
                     <div class="d-flex justify-content-between align-items-center">
@@ -155,8 +155,7 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <!-- Help & Tips -->
+        <!-- <div class="col-lg-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom">
                     <h6 class="mb-0 fw-semibold">
@@ -201,7 +200,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -1009,20 +1008,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="mt-3">
-                <p class="text-muted">
-                    <small>
-                        <strong>คำแนะนำ:</strong> กรุณาแก้ไขข้อผิดพลาดในไฟล์ Excel และลองนำเข้าอีกครั้ง<br>
-                        <strong>รูปแบบข้อมูลที่ถูกต้อง:</strong><br>
-                        • ID: ตัวเลข (ไม่ซ้ำ)<br>
-                        • Parent ID: ตัวเลข (0 สำหรับหมวดหมู่หลัก หรือ ID ที่มีอยู่ในระบบ/ไฟล์)<br>
-                        • ชื่อหมวดหมู่: ข้อความ ≤ 255 ตัวอักษร<br>
-                        • ระดับ: ตัวเลข (1=หลัก, 2=ย่อย, ฯลฯ)<br>
-                        • ลำดับ: ตัวเลข > 0<br>
-                        • สถานะ: active หรือ inactive
-                    </small>
-                </p>
-            </div>
+
         `;
 
         Swal.fire({
