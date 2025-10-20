@@ -285,7 +285,7 @@
                                         <th>เลขที่อ้างอิง</th>
                                         <th>รายละเอียด</th>
                                         <th>หมวดหมู่</th>
-                                        <th>คู่สัญญา</th>
+                                        <!-- <th>คู่สัญญา</th> -->
                                         <th>ยอดเงิน</th>
                                     </tr>
                                 </thead>
@@ -455,7 +455,6 @@ function updateRecentTransactionsTable(transactions) {
                     <td>${transaction.ref_no || '-'}</td>
                     <td>${transaction.description || '-'}</td>
                     <td>${transaction.category_name}</td>
-                    <td>${transaction.counterpartie_name}</td>
                     <td>฿${transaction.total}</td>
                 </tr>
             `;
