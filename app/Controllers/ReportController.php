@@ -400,7 +400,7 @@ class ReportController extends BaseController
                 ]
             ];
 
-            $sheet->getStyle('A1:H1')->applyFromArray($headerStyle);
+            $sheet->getStyle('A1:G1')->applyFromArray($headerStyle);
 
             // เพิ่มข้อมูล
             $row = 2;
@@ -436,7 +436,7 @@ class ReportController extends BaseController
             ];
 
             if ($row > 2) {
-                $sheet->getStyle('A2:H' . ($row - 1))->applyFromArray($dataStyle);
+                $sheet->getStyle('A2:G' . ($row - 1))->applyFromArray($dataStyle);
             }
 
             // เพิ่มแถวสรุป
@@ -589,7 +589,7 @@ class ReportController extends BaseController
                 ]
             ];
 
-            $sheet->getStyle('A1:H1')->applyFromArray($headerStyle);
+            $sheet->getStyle('A1:G1')->applyFromArray($headerStyle);
 
             // เพิ่มข้อมูล
             $row = 2;
@@ -625,7 +625,7 @@ class ReportController extends BaseController
             ];
 
             if ($row > 2) {
-                $sheet->getStyle('A2:H' . ($row - 1))->applyFromArray($dataStyle);
+                $sheet->getStyle('A2:G' . ($row - 1))->applyFromArray($dataStyle);
             }
 
             // เพิ่มแถวสรุป
