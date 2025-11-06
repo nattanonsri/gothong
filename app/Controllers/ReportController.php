@@ -411,12 +411,12 @@ class ReportController extends BaseController
                 
                 $sheet->setCellValue('A' . $row, $index + 1);
                 $sheet->setCellValue('B' . $row, date('d/m/Y H:i', strtotime($transaction['datetime'])));
-                $sheet->setCellValue('C' . $row, $transaction['ref_no'] ?: '-');
-                $sheet->setCellValue('D' . $row, $transaction['item_name'] ?: $transaction['descripton'] ?: '-');
-                $sheet->setCellValue('E' . $row, $transaction['category_name'] ?: '-');
-                $sheet->setCellValue('F' . $row, number_format($totalPrice, 2));
-                $sheet->setCellValue('G' . $row, $transaction['payment_name'] ?: '-');
-                $sheet->setCellValue('H' . $row, $transaction['note'] ?: '-');
+                // $sheet->setCellValue('C' . $row, $transaction['ref_no'] ?: '-');
+                $sheet->setCellValue('C' . $row, $transaction['item_name'] ?: $transaction['descripton'] ?: '-');
+                $sheet->setCellValue('D' . $row, $transaction['category_name'] ?: '-');
+                $sheet->setCellValue('E' . $row, number_format($totalPrice, 2));
+                $sheet->setCellValue('F' . $row, $transaction['payment_name'] ?: '-');
+                $sheet->setCellValue('G' . $row, $transaction['note'] ?: '-');
                 
                 $totalAmount += $totalPrice;
                 $row++;
@@ -467,12 +467,12 @@ class ReportController extends BaseController
             // ปรับความกว้างคอลัมน์
             $sheet->getColumnDimension('A')->setWidth(8);
             $sheet->getColumnDimension('B')->setWidth(18);
-            $sheet->getColumnDimension('C')->setWidth(15);
-            $sheet->getColumnDimension('D')->setWidth(30);
-            $sheet->getColumnDimension('E')->setWidth(20);
-            $sheet->getColumnDimension('F')->setWidth(15);
-            $sheet->getColumnDimension('G')->setWidth(20);
-            $sheet->getColumnDimension('H')->setWidth(25);
+            // $sheet->getColumnDimension('C')->setWidth(15);
+            $sheet->getColumnDimension('C')->setWidth(30);
+            $sheet->getColumnDimension('D')->setWidth(20);
+            $sheet->getColumnDimension('E')->setWidth(15);
+            $sheet->getColumnDimension('F')->setWidth(20);
+            $sheet->getColumnDimension('G')->setWidth(25);
 
             // สร้างไฟล์ Excel
             $filename = 'รายงานรายได้_' . date('Y-m-d_H-i-s') . '.xlsx';
@@ -556,11 +556,11 @@ class ReportController extends BaseController
                 'A1' => 'ลำดับ',
                 'B1' => 'วันที่',
                 // 'C1' => 'เลขที่อ้างอิง',
-                'D1' => 'รายการ',
-                'E1' => 'หมวดหมู่',
-                'F1' => 'จำนวนเงิน',
-                'G1' => 'วิธีการชำระเงิน',
-                'H1' => 'หมายเหตุ'
+                'C1' => 'รายการ',
+                'D1' => 'หมวดหมู่',
+                'E1' => 'จำนวนเงิน',
+                'F1' => 'วิธีการชำระเงิน',
+                'G1' => 'หมายเหตุ'
             ];
 
             foreach ($headers as $cell => $value) {
@@ -600,12 +600,12 @@ class ReportController extends BaseController
                 
                 $sheet->setCellValue('A' . $row, $index + 1);
                 $sheet->setCellValue('B' . $row, date('d/m/Y H:i', strtotime($transaction['datetime'])));
-                $sheet->setCellValue('C' . $row, $transaction['ref_no'] ?: '-');
-                $sheet->setCellValue('D' . $row, $transaction['item_name'] ?: $transaction['descripton'] ?: '-');
-                $sheet->setCellValue('E' . $row, $transaction['category_name'] ?: '-');
-                $sheet->setCellValue('F' . $row, number_format($totalPrice, 2));
-                $sheet->setCellValue('G' . $row, $transaction['payment_name'] ?: '-');
-                $sheet->setCellValue('H' . $row, $transaction['note'] ?: '-');
+                // $sheet->setCellValue('C' . $row, $transaction['ref_no'] ?: '-');
+                $sheet->setCellValue('C' . $row, $transaction['item_name'] ?: $transaction['descripton'] ?: '-');
+                $sheet->setCellValue('D' . $row, $transaction['category_name'] ?: '-');
+                $sheet->setCellValue('E' . $row, number_format($totalPrice, 2));
+                $sheet->setCellValue('F' . $row, $transaction['payment_name'] ?: '-');
+                $sheet->setCellValue('G' . $row, $transaction['note'] ?: '-');
                 
                 $totalAmount += $totalPrice;
                 $row++;
@@ -656,12 +656,12 @@ class ReportController extends BaseController
             // ปรับความกว้างคอลัมน์
             $sheet->getColumnDimension('A')->setWidth(8);
             $sheet->getColumnDimension('B')->setWidth(18);
-            $sheet->getColumnDimension('C')->setWidth(15);
-            $sheet->getColumnDimension('D')->setWidth(30);
-            $sheet->getColumnDimension('E')->setWidth(20);
-            $sheet->getColumnDimension('F')->setWidth(15);
-            $sheet->getColumnDimension('G')->setWidth(20);
-            $sheet->getColumnDimension('H')->setWidth(25);
+            // $sheet->getColumnDimension('C')->setWidth(15);
+            $sheet->getColumnDimension('C')->setWidth(30);
+            $sheet->getColumnDimension('D')->setWidth(20);
+            $sheet->getColumnDimension('E')->setWidth(15);
+            $sheet->getColumnDimension('F')->setWidth(20);
+            $sheet->getColumnDimension('G')->setWidth(25);
 
             // สร้างไฟล์ Excel
             $filename = 'รายงานค่าใช้จ่าย_' . date('Y-m-d_H-i-s') . '.xlsx';
