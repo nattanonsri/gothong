@@ -12,7 +12,7 @@ class UserModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ["uuid","card_id","customer_id","perfix_th","first_name_th","last_name_th","perfix_en","first_name_en","last_name_en","username","password","email","phone","organization_id","gender","birth_date","image_profile"];
+    protected $allowedFields    = ["uuid","card_id","customer_id","perfix_th","first_name_th","last_name_th","perfix_en","first_name_en","last_name_en","username","password","email","phone","gender","birth_date","image_profile"];
     
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -51,7 +51,6 @@ class UserModel extends Model
             {$this->table}.username,
             {$this->table}.email,
             {$this->table}.phone,
-            {$this->table}.organization_id,
             {$this->table}.gender,
             {$this->table}.birth_date,
             {$this->table}.image_profile,
