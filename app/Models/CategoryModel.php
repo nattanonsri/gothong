@@ -93,11 +93,11 @@ class CategoryModel extends Model
 
         // แยกหมวดหมู่หลักและหมวดหมู่ย่อย
         foreach ($categories as $category) {
-            if ($category['parent_id'] == 0) {
+            // if ($category['parent_id'] == 0) {
                 $hierarchical[] = $category;
-            } else {
-                $children[$category['parent_id']][] = $category;
-            }
+            // } else {
+                // $children[$category['parent_id']][] = $category;
+            // }
         }
 
         // รวมหมวดหมู่ย่อยเข้ากับหมวดหมู่หลัก

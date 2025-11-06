@@ -80,7 +80,7 @@ class ReportController extends BaseController
             $builder->join('tb_transaction_item ti', 't.id = ti.transaction_id', 'left');
             $builder->join('tb_category c', 'ti.category_id = c.id', 'left');
             $builder->join('tb_payment p', 't.payment_id = p.id', 'left');
-            $builder->where('c.parent_id', 3);
+            $builder->where('c.node_id', 3);
             $builder->where('t.deleted_at IS NULL');
 
             // กรองตามวันที่
@@ -199,7 +199,7 @@ class ReportController extends BaseController
             $builder->join('tb_transaction_item ti', 't.id = ti.transaction_id', 'left');
             $builder->join('tb_category c', 'ti.category_id = c.id', 'left');
             $builder->join('tb_payment p', 't.payment_id = p.id', 'left');
-            $builder->where('c.parent_id', 4);
+            $builder->where('c.node_id', 4);
             $builder->where('t.deleted_at IS NULL');
 
             // กรองตามวันที่
@@ -299,7 +299,7 @@ class ReportController extends BaseController
     {
         try {
             $categories = $this->categoryModel->where('status', 'active')->findAll();
-            
+
             return $this->response->setJSON([
                 'success' => true,
                 'data' => $categories
@@ -340,7 +340,7 @@ class ReportController extends BaseController
             $builder->join('tb_transaction_item ti', 't.id = ti.transaction_id', 'left');
             $builder->join('tb_category c', 'ti.category_id = c.id', 'left');
             $builder->join('tb_payment p', 't.payment_id = p.id', 'left');
-            $builder->where('c.parent_id', 3);
+            $builder->where('c.node_id', 3);
             $builder->where('t.deleted_at IS NULL');
 
             // กรองตามวันที่
@@ -366,7 +366,7 @@ class ReportController extends BaseController
             $headers = [
                 'A1' => 'ลำดับ',
                 'B1' => 'วันที่',
-                'C1' => 'เลขที่อ้างอิง',
+                // 'C1' => 'เลขที่อ้างอิง',
                 'D1' => 'รายการ',
                 'E1' => 'หมวดหมู่',
                 'F1' => 'จำนวนเงิน',
@@ -529,7 +529,7 @@ class ReportController extends BaseController
             $builder->join('tb_transaction_item ti', 't.id = ti.transaction_id', 'left');
             $builder->join('tb_category c', 'ti.category_id = c.id', 'left');
             $builder->join('tb_payment p', 't.payment_id = p.id', 'left');
-            $builder->where('c.parent_id', 4);
+            $builder->where('c.node_id', 4);
             $builder->where('t.deleted_at IS NULL');
 
             // กรองตามวันที่
@@ -555,7 +555,7 @@ class ReportController extends BaseController
             $headers = [
                 'A1' => 'ลำดับ',
                 'B1' => 'วันที่',
-                'C1' => 'เลขที่อ้างอิง',
+                // 'C1' => 'เลขที่อ้างอิง',
                 'D1' => 'รายการ',
                 'E1' => 'หมวดหมู่',
                 'F1' => 'จำนวนเงิน',

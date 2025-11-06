@@ -18,13 +18,13 @@ $menuItems = [
         'badge' => null,
         'permission' => 'view_record'
     ],
-    'category' => [
-        'icon' => 'fa-solid fa-layer-group me-2',
-        'title' => lang('app.category'),
-        'url' => base_url('backend/category'),
-        'badge' => null,
-        'permission' => 'view_category'
-    ],
+    // 'category' => [
+    //     'icon' => 'fa-solid fa-layer-group me-2',
+    //     'title' => lang('app.category'),
+    //     'url' => base_url('backend/category'),
+    //     'badge' => null,
+    //     'permission' => 'view_category'
+    // ],
     // 'organization' => [
     //     'icon' => 'fa-solid fa-building me-2',
     //     'title' => lang('app.organization'),

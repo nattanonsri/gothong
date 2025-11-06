@@ -115,3 +115,4 @@ $routes->post($baseSubURL . '/admin/deleteRole', 'AdminController::deleteRole', 
 $routes->get($baseSubURL . '/admin/getAllPermissions', 'AdminController::getAllPermissions', ['filter' => 'permission:view_admin']);
 $routes->get($baseSubURL . '/admin/getRolePermissions', 'AdminController::getRolePermissions', ['filter' => 'permission:view_admin']);
 $routes->post($baseSubURL . '/admin/saveRolePermissions', 'AdminController::saveRolePermissions', ['filter' => 'permission:view_admin']);
+$routes->get($baseSubURL . '/admin/getAdminProfile', 'AdminController::getAdminProfile', ['filter' => 'permission:view_admin']);

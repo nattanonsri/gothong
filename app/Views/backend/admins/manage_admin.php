@@ -112,10 +112,10 @@
                                         <!-- <div class="btn-group" role="group"> -->
                                         <!-- <button type="button" class="btn btn-outline-primary btn-sm" onclick="openRoleAssignmentModal(<?= $admin['id'] ?>)" title="จัดการ Role">
                                                 <i class="fas fa-shield-alt"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-info btn-sm" onclick="openAdminDetailModal(<?= $admin['id'] ?>)" title="ดูรายละเอียด">
-                                                <i class="fas fa-eye"></i>
                                             </button> -->
+                                        <button type="button" class="btn btn-outline-info btn-sm" onclick="viewAdminProfile(<?= $admin['id'] ?>)" title="ดู Profile">
+                                            <i class="fas fa-user"></i>
+                                        </button>
                                         <button type="button" class="btn btn-outline-warning btn-sm" onclick="editAdmin(<?= $admin['id'] ?>)" title="แก้ไข">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -309,40 +309,111 @@
     </div>
 </div>
 
-<!-- Admin Detail Modal -->
-<div class="modal fade" id="adminDetailModal" tabindex="-1" aria-labelledby="adminDetailModalLabel" aria-hidden="true" data-bs-focus="false">
-    <div class="modal-dialog">
+<!-- Admin Profile Modal -->
+<div class="modal fade" id="adminProfileModal" tabindex="-1" aria-labelledby="adminProfileModalLabel" aria-hidden="true" data-bs-focus="false">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="adminDetailModalLabel">
-                    <i class="fas fa-user me-2"></i>รายละเอียดผู้ใช้งาน
+                <h5 class="modal-title" id="adminProfileModalLabel">
+                    <i class="fas fa-user me-2"></i>Profile ผู้ใช้งาน
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="avatar-lg bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
-                                <i class="fas fa-user fa-2x"></i>
-                            </div>
-                            <div>
-                                <h5 class="mb-0" id="detailUsername"></h5>
-                                <small class="text-muted">ID: <span id="detailAdminId"></span></small>
+                <div id="profileLoading" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-muted">กำลังโหลดข้อมูล...</p>
+                </div>
+                <div id="profileContent" style="display: none;">
+                    <div class="row g-4">
+                        <!-- Profile Header -->
+                        <div class="col-12">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="avatar-xl bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-4" id="profileAvatar">
+                                    <i class="fas fa-user fa-3x"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-1" id="profileUsername">-</h4>
+                                    <p class="text-muted mb-0">ID: <span id="profileAdminId">-</span></p>
+                                    <!-- <p class="text-muted mb-0">UUID: <span id="profileUuid">-</span></p> -->
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label fw-500">สิทธิ์การเข้าถึง:</label>
-                        <div id="detailRoles" class="d-flex flex-wrap gap-2">
-                            <!-- Roles will be displayed here -->
+
+                        <!-- Personal Information -->
+                        <div class="col-12">
+                            <h6 class="fw-600 mb-3 border-bottom pb-2">
+                                <i class="fas fa-id-card me-2 text-primary"></i>ข้อมูลส่วนตัว
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">ชื่อภาษาไทย</label>
+                                    <p class="mb-0" id="profileNameTh">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">ชื่อภาษาอังกฤษ</label>
+                                    <p class="mb-0" id="profileNameEn">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">อีเมล</label>
+                                    <p class="mb-0" id="profileEmail">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">เบอร์โทรศัพท์</label>
+                                    <p class="mb-0" id="profilePhone">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">เพศ</label>
+                                    <p class="mb-0" id="profileGender">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">วันเกิด</label>
+                                    <p class="mb-0" id="profileBirthDate">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">เลขบัตรประชาชน</label>
+                                    <p class="mb-0" id="profileCardId">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">Customer ID</label>
+                                    <p class="mb-0" id="profileCustomerId">-</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label fw-500">วันที่สร้างผู้ใช้งาน:</label>
-                        <p class="mb-0" id="detailCreatedAt">-</p>
+
+                        <!-- Roles Information -->
+                        <div class="col-12">
+                            <h6 class="fw-600 mb-3 border-bottom pb-2">
+                                <i class="fas fa-shield-alt me-2 text-primary"></i>สิทธิ์การเข้าถึง
+                            </h6>
+                            <div id="profileRoles" class="d-flex flex-wrap gap-2">
+                                <!-- Roles will be displayed here -->
+                            </div>
+                        </div>
+
+                        <!-- System Information -->
+                        <div class="col-12">
+                            <h6 class="fw-600 mb-3 border-bottom pb-2">
+                                <i class="fas fa-info-circle me-2 text-primary"></i>ข้อมูลระบบ
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">วันที่สร้าง</label>
+                                    <p class="mb-0" id="profileCreatedAt">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500 text-muted">อัปเดตล่าสุด</label>
+                                    <p class="mb-0" id="profileUpdatedAt">-</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
             </div>
         </div>
     </div>
@@ -595,6 +666,128 @@
                 .avatar-xl { width: 80px; height: 80px; }
             `)
             .appendTo('head');
+    }
+
+    // View Admin Profile
+    function viewAdminProfile(adminId) {
+        // Show loading, hide content
+        $('#profileLoading').show();
+        $('#profileContent').hide();
+        
+        // Reset modal
+        $('#adminProfileModal').modal('show');
+        
+        // Load profile data
+        $.ajax({
+            url: `${base_url}admin/getAdminProfile`,
+            type: 'GET',
+            data: { admin_id: adminId },
+            dataType: 'json',
+            success: function(res) {
+                if (res.success && res.admin) {
+                    displayAdminProfile(res.admin, res.roles || []);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: res.message || 'ไม่สามารถโหลดข้อมูลได้'
+                    });
+                    $('#adminProfileModal').modal('hide');
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: xhr.responseJSON?.message || 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ'
+                });
+                $('#adminProfileModal').modal('hide');
+            }
+        });
+    }
+
+    function displayAdminProfile(admin, roles) {
+        // Hide loading, show content
+        $('#profileLoading').hide();
+        $('#profileContent').show();
+        
+        // Set basic info
+        $('#profileAdminId').text(admin.id || '-');
+        $('#profileUsername').text(admin.username || '-');
+        $('#profileUuid').text(admin.uuid || '-');
+        
+        // Set profile image if exists
+        if (admin.image_profile) {
+            $('#profileAvatar').html(`<img src="${base_url}backend/profile/image/${admin.image_profile}" alt="Profile" class="rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">`);
+        } else {
+            $('#profileAvatar').html('<i class="fas fa-user fa-3x"></i>');
+        }
+        
+        // Set personal information
+        const nameTh = [admin.perfix_th, admin.first_name_th, admin.last_name_th].filter(Boolean).join(' ') || '-';
+        const nameEn = [admin.perfix_en, admin.first_name_en, admin.last_name_en].filter(Boolean).join(' ') || '-';
+        $('#profileNameTh').text(nameTh);
+        $('#profileNameEn').text(nameEn);
+        $('#profileEmail').text(admin.email || '-');
+        $('#profilePhone').text(admin.phone || '-');
+        
+        // Set gender
+        let genderText = '-';
+        if (admin.gender) {
+            genderText = admin.gender === 'M' || admin.gender === 'male' ? 'ชาย' : 
+                        admin.gender === 'F' || admin.gender === 'female' ? 'หญิง' : 
+                        admin.gender;
+        }
+        $('#profileGender').text(genderText);
+        
+        // Set birth date
+        if (admin.birth_date) {
+            const birthDate = new Date(admin.birth_date);
+            $('#profileBirthDate').text(birthDate.toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }));
+        } else {
+            $('#profileBirthDate').text('-');
+        }
+        
+        // Set card ID and customer ID
+        $('#profileCardId').text(admin.card_id || '-');
+        $('#profileCustomerId').text(admin.customer_id || '-');
+        
+        // Set roles
+        const rolesHtml = roles.length > 0 
+            ? roles.map(role => `<span class="badge bg-primary">${role.name}</span>`).join('')
+            : '<span class="text-muted">ไม่มี Role</span>';
+        $('#profileRoles').html(rolesHtml);
+        
+        // Set system information
+        if (admin.created_at) {
+            const createdDate = new Date(admin.created_at);
+            $('#profileCreatedAt').text(createdDate.toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }));
+        } else {
+            $('#profileCreatedAt').text('-');
+        }
+        
+        if (admin.updated_at) {
+            const updatedDate = new Date(admin.updated_at);
+            $('#profileUpdatedAt').text(updatedDate.toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }));
+        } else {
+            $('#profileUpdatedAt').text('-');
+        }
     }
 
     function setupEventListeners() {

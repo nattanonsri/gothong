@@ -154,11 +154,11 @@
                                     value="<?= $user['birth_date'] ?? '' ?>" required>
                             </div>
 
-                            <div class="col-12 mt-4"></div>
+                            <!-- <div class="col-12 mt-4"></div>
                                 <h6 class="text-primary mb-3">
                                     <i class="fa-solid fa-circle-check me-2"></i>
                                     องค์กร
-                                </h6>
+                                </h6> -->
                                 <!-- <div class="form-check">
                                     <select class="form-select" id="organization_id" name="organization_id" required>
                                         <option value="">เลือกองค์กร</option>
@@ -167,7 +167,7 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div> -->
-                            </div>
+                            <!-- </div> -->
 
                             <div class="col-12 text-end mt-4">
                                 <button type="button" class="btn btn-secondary me-2" onclick="window.location.href='<?= base_url('backend/profile') ?>'">

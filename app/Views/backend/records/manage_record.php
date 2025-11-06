@@ -12,10 +12,12 @@
                 <p class="text-muted mb-0">จัดการข้อมูลรายรับรายจ่าย</p>
             </div>
             <div class="col-md-6 text-end">
+                <?php if (has_permission('edit_record')): ?>
                 <button class="btn btn-primary" id="btnAddRecord">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    เพิ่มรายการใหม่
-                </button>
+                        <i class="fa-solid fa-plus me-2"></i>
+                        เพิ่มรายการใหม่
+                    </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -129,8 +131,9 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">ไฟล์แนบ (รูปภาพ)</label>
+                                <label class="form-label">ไฟล์แนบ (รูปภาพ) <span class="text-danger">*</span></label>
                                 <input type="file" class="form-control" id="attachments" name="attachments[]" multiple accept="image/*">
+                                <small id="attachmentsError" class="text-danger"></small>
                                 <div id="attachmentPreview" class="mt-2"></div>
                                 <div id="existingAttachments" class="mt-2"></div>
                             </div>
@@ -210,35 +213,35 @@
         initDataTable();
         // loadCounterparties();
         initEventHandlers();
-        initSelect2();
+        // initSelect2();
 
         // Set default datetime to now
         setDefaultDateTime();
 
     });
 
-    function initSelect2() {
-        // เริ่มต้น Select2 สำหรับ select ที่มีอยู่แล้ว
-        $('.item-category').each(function() {
-            if (!$(this).hasClass('select2-hidden-accessible')) {
-                $(this).select2({
-                    theme: 'bootstrap-5',
-                    placeholder: 'เลือกหมวดหมู่',
-                    allowClear: true,
-                    width: '100%',
-                    templateResult: function(data) {
-                        if (!data.id) {
-                            return data.text;
-                        }
-                        return $('<span>' + data.text + '</span>');
-                    },
-                    templateSelection: function(data) {
-                        return data.text;
-                    }
-                });
-            }
-        });
-    }
+    // function initSelect2() {
+    //     // เริ่มต้น Select2 สำหรับ select ที่มีอยู่แล้ว
+    //     $('.item-category').each(function() {
+    //         if (!$(this).hasClass('select2-hidden-accessible')) {
+    //             $(this).select2({
+    //                 theme: 'bootstrap-5',
+    //                 placeholder: 'เลือกหมวดหมู่',
+    //                 allowClear: true,
+    //                 width: '100%',
+    //                 templateResult: function(data) {
+    //                     if (!data.id) {
+    //                         return data.text;
+    //                     }
+    //                     return $('<span>' + data.text + '</span>');
+    //                 },
+    //                 templateSelection: function(data) {
+    //                     return data.text;
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
 
     function initDataTable() {
         recordsDataTable = $('#recordsTable').DataTable({
@@ -309,12 +312,14 @@
                             <button type="button" class="btn btn-info btn-view" data-uuid="${row.uuid}" title="ดูรายละเอียด">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
+                            <?php if (has_permission('edit_record')): ?>
                             <button type="button" class="btn btn-warning btn-edit" data-uuid="${row.uuid}" title="แก้ไข">
                                 <i class="fa-solid fa-edit"></i>
                             </button>
                             <button type="button" class="btn btn-danger btn-delete" data-uuid="${row.uuid}" title="ลบ">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
+                            <?php endif; ?>
                         </div>
                     `;
                     }
@@ -408,7 +413,7 @@
 
         $(document).on('click', '.btn-remove-item', function() {
             // ทำลาย Select2 ก่อนลบแถว
-            $(this).closest('tr').find('.item-category').select2('destroy');
+            // $(this).closest('tr').find('.item-category').select2('destroy');
             $(this).closest('tr').remove();
             calculateTotal();
         });
@@ -429,6 +434,15 @@
 
         $('#attachments').on('change', function(e) {
             previewAttachments(e.target.files);
+            // Validate attachments in real-time
+            const hasNewAttachments = e.target.files && e.target.files.length > 0;
+            const hasExistingAttachments = $('#existingAttachments .attachment-item').length > 0;
+            
+            if (hasNewAttachments || hasExistingAttachments) {
+                clearError('attachments');
+            } else {
+                showError('attachments', 'กรุณาแนบรูปภาพอย่างน้อย 1 ไฟล์');
+            }
         });
 
         $(document).on('click', '.btn-delete-attachment', function() {
@@ -440,7 +454,7 @@
         $('#recordModal').on('hidden.bs.modal', function() {
             clearAllErrors();
             // ทำลาย Select2 ทั้งหมดใน modal
-            $('.item-category').select2('destroy');
+            // $('.item-category').select2('destroy');
         });
         
         // Real-time validation
@@ -574,7 +588,7 @@
     }
     
     function clearAllErrors() {
-        const fields = ['datetime', 'paymentId', 'counterpartieName', 'counterpartieTaxId', 'counterpartiePhone', 'counterpartieEmail'];
+        const fields = ['datetime', 'paymentId', 'attachments', 'counterpartieName', 'counterpartieTaxId', 'counterpartiePhone', 'counterpartieEmail'];
         fields.forEach(field => {
             clearError(field);
         });
@@ -601,9 +615,9 @@
         modal.show();
         
         // เริ่มต้น Select2 หลังจาก modal แสดง
-        setTimeout(() => {
-            initSelect2();
-        }, 300);
+        // setTimeout(() => {
+        //     initSelect2();
+        // }, 300);
     }
 
 
@@ -614,18 +628,19 @@
         let categoryOptions = '<option value="">เลือกหมวดหมู่</option>';
         
         categories.forEach(parentCategory => {
-            // เพิ่มหมวดหมู่หลัก
-            categoryOptions += `<optgroup label="${parentCategory.name}">`;
+            // เพิ่มหมวดหมู่หลักเป็น option ที่เลือกได้
+            const parentSelected = item && item.category_id == parentCategory.id ? 'selected' : '';
+            categoryOptions += `<option value="${parentCategory.id}" ${parentSelected}>${parentCategory.name}</option>`;
             
-            // เพิ่มหมวดหมู่ย่อย
+            // เพิ่มหมวดหมู่ย่อยใน optgroup
             if (parentCategory.children && parentCategory.children.length > 0) {
+                categoryOptions += `<optgroup label="${parentCategory.name} - หมวดหมู่ย่อย">`;
                 parentCategory.children.forEach(childCategory => {
                     const selected = item && item.category_id == childCategory.id ? 'selected' : '';
                     categoryOptions += `<option value="${childCategory.id}" ${selected}>${childCategory.name}</option>`;
                 });
+                categoryOptions += '</optgroup>';
             }
-            
-            categoryOptions += '</optgroup>';
         });
 
         const row = `
@@ -659,21 +674,21 @@
         $('#itemsTableBody').append(row);
         
         // เริ่มต้น Select2 สำหรับ select ใหม่
-        $('.item-category').last().select2({
-            theme: 'bootstrap-5',
-            placeholder: 'เลือกหมวดหมู่',
-            allowClear: true,
-            width: '100%',
-            templateResult: function(data) {
-                if (!data.id) {
-                    return data.text;
-                }
-                return $('<span>' + data.text + '</span>');
-            },
-            templateSelection: function(data) {
-                return data.text;
-            }
-        });
+        // $('.item-category').last().select2({
+        //     theme: 'bootstrap-5',
+        //     placeholder: 'เลือกหมวดหมู่',
+        //     allowClear: true,
+        //     width: '100%',
+        //     templateResult: function(data) {
+        //         if (!data.id) {
+        //             return data.text;
+        //         }
+        //         return $('<span>' + data.text + '</span>');
+        //     },
+        //     templateSelection: function(data) {
+        //         return data.text;
+        //     }
+        // });
         
         calculateTotal();
     }
@@ -950,9 +965,9 @@
                     $('#recordModal').modal('show');
                     
                     // เริ่มต้น Select2 หลังจาก modal แสดง
-                    setTimeout(() => {
-                        initSelect2();
-                    }, 300);
+                    // setTimeout(() => {
+                    //     initSelect2();
+                    // }, 300);
                 }
             },
             error: function(xhr, status, error) {
@@ -1060,6 +1075,17 @@
                             }).then(() => {
                                 // Remove the attachment from the display
                                 $(`.btn-delete-attachment[data-uuid="${attachmentUuid}"]`).closest('.attachment-item').remove();
+                                
+                                // Validate attachments after deletion
+                                const attachmentsInput = $('#attachments')[0];
+                                const hasNewAttachments = attachmentsInput && attachmentsInput.files && attachmentsInput.files.length > 0;
+                                const hasExistingAttachments = $('#existingAttachments .attachment-item').length > 0;
+                                
+                                if (!hasNewAttachments && !hasExistingAttachments) {
+                                    showError('attachments', 'กรุณาแนบรูปภาพอย่างน้อย 1 ไฟล์');
+                                } else {
+                                    clearError('attachments');
+                                }
                             });
                         }
                     },
@@ -1158,6 +1184,18 @@
         if (!paymentId) {
             showError('paymentId', 'กรุณาเลือกช่องทางชำระเงิน');
             isValid = false;
+        }
+        
+        // Validate attachments (required)
+        const attachmentsInput = $('#attachments')[0];
+        const hasNewAttachments = attachmentsInput && attachmentsInput.files && attachmentsInput.files.length > 0;
+        const hasExistingAttachments = $('#existingAttachments .attachment-item').length > 0;
+        
+        if (!hasNewAttachments && !hasExistingAttachments) {
+            showError('attachments', 'กรุณาแนบรูปภาพอย่างน้อย 1 ไฟล์');
+            isValid = false;
+        } else {
+            clearError('attachments');
         }
         
         // Validate new counterpartie fields if creating new

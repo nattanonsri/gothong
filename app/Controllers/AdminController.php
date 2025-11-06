@@ -33,9 +33,6 @@ class AdminController extends BaseController
             'admins' => $this->userModel->getAdminsWithRoles(),
             'roles' => $this->roleModel->findAll(),
         ];
-        // echo "<pre>";
-        // var_dump($data['admins']);
-        // exit;
         return view('backend/admins/manage_admin', $data);
     }
 
@@ -402,6 +399,45 @@ class AdminController extends BaseController
         return $this->response->setJSON([
             'success' => true,
             'message' => 'บันทึก Permission สำเร็จ'
+        ]);
+    }
+
+    public function getAdminProfile()
+    {
+        $adminId = $this->request->getGet('admin_id');
+
+        if (!isset($adminId)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'ไม่พบ Admin ID'
+            ]);
+        }
+
+        // Get admin data with all fields
+        $admin = $this->userModel->find($adminId);
+        
+        if (!$admin) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'ไม่พบข้อมูลผู้ใช้งาน'
+            ]);
+        }
+
+        // Get roles
+        $userRoles = $this->userRoleModel->where('user_id', $adminId)->findAll();
+        $roleIds = array_column($userRoles, 'role_id');
+        $roles = [];
+        if (!empty($roleIds)) {
+            $roles = $this->roleModel->whereIn('id', $roleIds)->findAll();
+        }
+
+        // Remove password from response
+        unset($admin['password']);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'admin' => $admin,
+            'roles' => $roles
         ]);
     }
 }

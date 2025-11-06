@@ -23,11 +23,9 @@
         'assets/fonts/prompt/stylesheet.css',
         'assets/bootstrap-5.3.7/css/bootstrap.min.css',
         'assets/fontawesome/css/all.min.css',
-
         'assets/select2/select2.min.css',
         'assets/select2/select2-bootstrap-5-theme.min.css',
         'assets/DataTables/datatables.min.css',
-        'assets/swiper/swiper-bundle.min.css',
         'assets/daterangepicker/daterangepicker.css',
     ];
 
@@ -38,19 +36,14 @@
         'assets/bootstrap-5.3.7/js/bootstrap.bundle.min.js',
         'assets/fontawesome/js/all.min.js',
         'assets/js/sweetalert2.all.min.js',
-
-        'assets/js/custom_func.js',
         'assets/select2/select2.full.min.js',
         'assets/DataTables/datatables.min.js',
         'assets/daterangepicker/moment.min.js',
         'assets/daterangepicker/daterangepicker.js',
-        'assets/js/panzoom.min.js',
-        'assets/swiper/swiper-bundle.min.js',
         'assets/js/config.js',
         'assets/js/dashboards-analytics.js',
         'assets/js/chart.js',
         'assets/js/interact.min.js',
-        'assets/js/socket.io.min.js',
 
     ];
     $outputJsFile = 'assets/js/minified_backend.min.js';

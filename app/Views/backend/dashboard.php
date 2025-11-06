@@ -282,7 +282,7 @@
                                 <thead>
                                     <tr>
                                         <th>วันที่</th>
-                                        <th>เลขที่อ้างอิง</th>
+                                        <!-- <th>เลขที่อ้างอิง</th> -->
                                         <th>รายละเอียด</th>
                                         <th>หมวดหมู่</th>
                                         <!-- <th>คู่สัญญา</th> -->
@@ -452,7 +452,6 @@ function updateRecentTransactionsTable(transactions) {
             html += `
                 <tr>
                     <td>${moment(transaction.datetime).format('DD/MM/YYYY HH:mm')}</td>
-                    <td>${transaction.ref_no || '-'}</td>
                     <td>${transaction.description || '-'}</td>
                     <td>${transaction.category_name}</td>
                     <td>฿${transaction.total}</td>
